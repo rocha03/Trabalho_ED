@@ -1,9 +1,7 @@
 package Missao.Itens;
 
-import Enums.TipoItens;
+import Interfaces.List.ListADT;
 
 public class Itens {
-    // divisao
-    private int pontos_recuperados;
-    private TipoItens tipo;
+    private ListADT<Item> itens;
 }
