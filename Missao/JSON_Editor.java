@@ -1,7 +1,5 @@
 package Missao;
 
-import Missao.Mapa.Edificio;
-
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -12,23 +10,28 @@ import org.json.simple.parser.ParseException;
 
 import DataStructs.Graph.ArrayGraph;
 import Interfaces.Graph.GraphADT;
+import Missao.Mapa.Edificio;
 
-public class Missao {
-    private int cod_missao;
-    private int versao;
-    private Edificio edificio;
-    // inimigos
-    // itens
+public class JSON_Editor {
+    private static JSON_Editor instance;
 
-    public void importJSON(String filePath) {
+    private JSON_Editor() {
+    }
+
+    public static JSON_Editor getInstance() {
+        if (instance == null) instance = new JSON_Editor();
+        return instance;
+    }
+
+    public void JSON_Read(Missao missao, String filePath) {
         JSONParser jsonParser = new JSONParser();
 
         try ( FileReader reader = new FileReader(filePath)) {
             // Read the JSON file
             JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
 
-            this.cod_missao = (int) jsonObject.get("cod-missao");
-            this.versao = (int) jsonObject.get("versao");
+            missao.setCod_missao((int) jsonObject.get("cod-missao"));
+            missao.setVersao((int) jsonObject.get("versao"));
 
             GraphADT<String> mapa = new ArrayGraph<String>();
 
@@ -51,25 +54,16 @@ public class Missao {
                 mapa.addEdge((String) pair.get(0), (String) pair.get(1));
             }
 
-            this.edificio = new Edificio(mapa, null);
+            // Get the 'inimigos' array from the JSON object
+            JSONArray inimigosArray = (JSONArray) jsonObject.get("inimigos");
 
+            
 
+            missao.setEdificio(new Edificio(mapa, null));
+
+            
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
     }
-
-    public void setCod_missao(int cod_missao) {
-        this.cod_missao = cod_missao;
-    }
-
-    public void setVersao(int versao) {
-        this.versao = versao;
-    }
-
-    public void setEdificio(Edificio edificio) {
-        this.edificio = edificio;
-    }
-
-    
 }
