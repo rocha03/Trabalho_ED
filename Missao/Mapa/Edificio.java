@@ -2,16 +2,16 @@ package Missao.Mapa;
 
 import Interfaces.Graph.GraphADT;
 
-public class Edificio<T> {
-    private GraphADT<T> mapa;
+public class Edificio {
+    private GraphADT<String> mapa;
     private Alvo alvo;
 
-    public Edificio(GraphADT<T> mapa, Alvo alvo) {
+    public Edificio(GraphADT<String> mapa, Alvo alvo) {
         this.mapa = mapa;
         this.alvo = alvo;
     }
 
-    public GraphADT<T> getMapa() {
+    public GraphADT<String> getMapa() {
         return mapa;
     }
 
