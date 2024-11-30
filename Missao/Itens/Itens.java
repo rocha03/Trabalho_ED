@@ -1,4 +1,4 @@
-package Missao;
+package Missao.Itens;
 
 import Enums.TipoItens;
 
