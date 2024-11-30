@@ -2,7 +2,7 @@ package Missao.Mapa;
 
 public class Alvo {
     private String divisao;
-    private String tipo;
+    private String tipo; // mudar p enum??
 
     public Alvo(String divisao, String tipo) {
         this.divisao = divisao;

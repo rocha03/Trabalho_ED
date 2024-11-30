@@ -54,10 +54,16 @@ public class JSON_Editor {
                 mapa.addEdge((String) pair.get(0), (String) pair.get(1));
             }
 
+            
+
             // Get the 'inimigos' array from the JSON object
             JSONArray inimigosArray = (JSONArray) jsonObject.get("inimigos");
 
-            
+            // Iterate over the array of objects
+            for (Object obj : inimigosArray) {
+                // Each element is a JSONObject
+                JSONObject inimigoObj = (JSONObject) obj;
+            }
 
             missao.setEdificio(new Edificio(mapa, null));
 

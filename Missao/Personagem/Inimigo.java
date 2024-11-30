@@ -1,7 +1,19 @@
 package Missao.Personagem;
 
-public class Inimigo {
+import Interfaces.Movivel;
+
+public class Inimigo extends Combate implements Movivel {
     private String nome;
     private int poder;
-    // divisao
+    private String divisao;
+
+    public Inimigo() {
+        vida = 150;
+    }
+
+    @Override
+    public void mover() {
+        // TODO Auto-generated method stub
+        
+    }
 }
