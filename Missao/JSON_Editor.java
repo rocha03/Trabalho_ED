@@ -60,7 +60,7 @@ public class JSON_Editor {
             missao.setCod_missao(((Long) codMissaoObj).intValue());
             missao.setCod_missao(((Long) versaoObj).intValue());
         } else {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("Campos cod-missao ou versao ausentes ou inválidos.");
         }
     }
 
