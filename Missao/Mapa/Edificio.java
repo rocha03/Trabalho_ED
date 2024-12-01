@@ -1,7 +1,5 @@
 package Missao.Mapa;
 
-import java.util.Iterator;
-
 import DataStructs.List.UnorderedList.LinkedUnorderedList;
 import Interfaces.Graph.GraphADT;
 import Interfaces.List.ListADT;

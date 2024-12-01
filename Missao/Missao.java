@@ -1,16 +1,11 @@
 package Missao;
 
 import java.util.Iterator;
-import java.util.Random;
 
-import DataStructs.Queue.LinkedQueue;
-import Enums.TipoItens;
 import Exceptions.EmptyCollectionException;
 import Exceptions.NotImportedException;
 import Interfaces.QueueADT;
-import Interfaces.Graph.GraphADT;
 import Interfaces.List.ListADT;
-import Missao.Itens.Item;
 import Missao.Itens.Itens;
 import Missao.Mapa.Edificio;
 import Missao.Personagem.Inimigo;
@@ -40,23 +35,24 @@ public class Missao {
     public void iniciarTurnos() throws NotImportedException {
         if (!imported)
             throw new NotImportedException("Not imported yet!");
-        
+
         boolean jogoAtivo = true;
-        String divisaoAtual;
+        toCruz.setDivisao(null);
         do {
             // IO para a entrada
-            divisaoAtual = edificio.ecolherEntrada(null);
-        } while (divisaoAtual == null);
+            toCruz.setDivisao(edificio.ecolherEntrada(null));
+        } while (toCruz.getDivisao() == null);
 
         while (jogoAtivo) {
             // Turno do Tó Cruz
-            divisaoAtual = turnoToCruz(divisaoAtual);
+            toCruz.setDivisao(turnoToCruz(toCruz.getDivisao()));
 
             // Turno Inimigos
             turnoInimigos();
 
             // Verifica condição de vitória ou derrota | Trocar o metodo alvoConcluido
-            if (toCruz.estaMorto() || (alvoConcluido(divisaoAtual) && edificio.estaNaEntrada(divisaoAtual))) {
+            if (toCruz.estaMorto()
+                    || (alvoConcluido(toCruz.getDivisao()) && edificio.estaNaEntrada(toCruz.getDivisao()))) {
                 jogoAtivo = false;
                 break;
             }
@@ -67,25 +63,6 @@ public class Missao {
             System.out.println("Tó Cruz foi derrotado...");
         } else {
             System.out.println("Missão Concluída com Sucesso!");
-        }
-
-        try {
-            QueueADT<Inimigo> temp = new LinkedQueue<Inimigo>();
-            Inimigo atualInimigo = inimigos.dequeue();
-            while (!inimigos.isEmpty()) {
-                // TODO Tó Cruz está na mesma divisão - ataca
-
-                // Inimigo move-se
-                atualInimigo.mover(edificio);
-
-                // TODO Encontra o Tó Cruz - ataca
-
-                if (!atualInimigo.estaMorto())
-                    temp.enqueue(atualInimigo);
-            }
-            inimigos = temp;
-        } catch (EmptyCollectionException e) {
-            // TODO Não há mais inimigos no mapa
         }
     }
 
@@ -127,9 +104,11 @@ public class Missao {
                 Inimigo inimigo = inimigos.dequeue();
 
                 if (inimigo.estaEmCombate()) {
-
+                    atacarToCruz(inimigo);
                 } else {
                     inimigo.mover(edificio);
+
+                    atacarToCruz(inimigo);
 
                     // Recolocar inimigo na fila
                     inimigos.enqueue(inimigo);
@@ -149,8 +128,8 @@ public class Missao {
                 if (inimigo.getDivisao().equals(divisaoAtual)) {
                     toCruz.darDano(inimigo);
                     if (!inimigo.estaMorto()) {
-                        // inimigo.darDano(toCruz); // turno do inimigo
-                        inimigos.enqueue(inimigo); // Recoloca o inimigo se não foi derrotado
+                        // Recoloca o inimigo se não foi derrotado
+                        inimigos.enqueue(inimigo);
                         toCruz.entrarOuSairCombate(true);
                     } else
                         System.out.println("Inimigo " + inimigo.getNome() + " derrotado!");
@@ -165,6 +144,13 @@ public class Missao {
         } catch (EmptyCollectionException e) {
             // TODO Não há mais inimigos no mapa
         }
+    }
+
+    private void atacarToCruz(Inimigo inimigo) {
+        if (inimigo.getDivisao().equals(toCruz.getDivisao())) {
+            inimigo.darDano(toCruz);
+            inimigo.entrarOuSairCombate(true);
+        } else inimigo.entrarOuSairCombate(false);
     }
 
     // verificar com o prof se pode ficar assim

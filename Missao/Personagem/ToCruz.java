@@ -3,9 +3,7 @@ package Missao.Personagem;
 import DataStructs.Stack.LinkedStack;
 import Exceptions.EmptyCollectionException;
 import Interfaces.Movivel;
-import Interfaces.QueueADT;
 import Interfaces.StackADT;
-import Interfaces.Graph.GraphADT;
 import Missao.Itens.Item;
 import Missao.Mapa.Edificio;
 
@@ -13,6 +11,7 @@ public class ToCruz extends Combatente implements Movivel {
     private static ToCruz instance;
     private int escudo;
     private StackADT<Item> mala;
+    private String divisao;
 
     private ToCruz() {
         super();
@@ -20,6 +19,7 @@ public class ToCruz extends Combatente implements Movivel {
         escudo = 0;
         poder = 20;
         mala = new LinkedStack<Item>();
+        divisao = null;
     }
 
     public static ToCruz getInstance() {
@@ -30,6 +30,14 @@ public class ToCruz extends Combatente implements Movivel {
 
     public int getEscudo() {
         return escudo;
+    }
+
+    public String getDivisao() {
+        return divisao;
+    }
+
+    public void setDivisao(String divisao) {
+        this.divisao = divisao;
     }
 
     public void encherMala(Item item) {
