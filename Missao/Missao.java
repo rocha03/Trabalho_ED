@@ -40,6 +40,7 @@ public class Missao {
     public void iniciarTurnos() throws NotImportedException {
         if (!imported)
             throw new NotImportedException("Not imported yet!");
+        
         boolean jogoAtivo = true;
         String divisaoAtual;
         do {
