@@ -2,8 +2,6 @@ package Missao;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Queue;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -11,6 +9,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import DataStructs.Graph.ArrayGraph;
+import DataStructs.Queue.LinkedQueue;
+import Interfaces.QueueADT;
 import Interfaces.Graph.GraphADT;
 import Missao.Mapa.Edificio;
 import Missao.Personagem.Inimigo;
@@ -18,7 +18,8 @@ import Missao.Personagem.Inimigo;
 public class JSON_Editor {
     private static JSON_Editor instance;
 
-    private JSON_Editor() {}
+    private JSON_Editor() {
+    }
 
     public static JSON_Editor getInstance() {
         if (instance == null)
@@ -41,8 +42,7 @@ public class JSON_Editor {
             processarArestas(jsonObject, mapa);
 
             // Lista para armazenar os inimigos
-            Queue<Inimigo> inimigosQueue = new LinkedList<>();
-            processarInimigos(jsonObject, inimigosQueue);
+            processarInimigos(jsonObject, missao);
 
             missao.setEdificio(new Edificio(mapa, null, null));
 
@@ -85,18 +85,20 @@ public class JSON_Editor {
         }
     }
 
-    private void processarInimigos(JSONObject jsonObject, Queue<Inimigo> inimigosQueue) {
+    private void processarInimigos(JSONObject jsonObject, Missao missao) {
         JSONArray inimigosArray = (JSONArray) jsonObject.get("inimigos");
         if (inimigosArray == null)
             throw new IllegalArgumentException("Campo 'inimigos' ausente ou inválido.");
 
+        QueueADT<Inimigo> inimigos = new LinkedQueue<Inimigo>();
         for (Object obj : inimigosArray) {
             JSONObject inimigoObj = (JSONObject) obj;
             String nome = (String) inimigoObj.get("nome");
             int poder = ((Long) inimigoObj.get("poder")).intValue();
             String divisao = (String) inimigoObj.get("divisao");
 
-            inimigosQueue.add(new Inimigo(nome, poder, divisao));
+            inimigos.enqueue(new Inimigo(nome, poder, divisao));
         }
+        missao.setInimigos(inimigos);
     }
 }
