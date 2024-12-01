@@ -3,13 +3,15 @@ package Missao.Personagem;
 import Interfaces.Movivel;
 import Missao.Itens.Item;
 
-public class ToCruz extends Combate implements Movivel {
+public class ToCruz extends Combatente implements Movivel {
     private static ToCruz instance;
     private int escudo;
 
     private ToCruz() {
         super();
+        vida = MAXVIDA;
         escudo = 0;
+        poder = 20;
     }
 
     public static ToCruz getInstance() {
@@ -38,5 +40,15 @@ public class ToCruz extends Combate implements Movivel {
     public void mover() {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    protected int receberDano(int dano) {
+        escudo -= dano;
+        if (escudo < 0) {
+            vida += escudo;
+            escudo = 0;
+        }
+        return vida;
     }
 }
