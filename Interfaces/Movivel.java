@@ -1,5 +1,8 @@
 package Interfaces;
 
+import Interfaces.Graph.GraphADT;
+import Missao.Mapa.Edificio;
+
 public interface Movivel {
-    public void mover();
+    public String mover(Edificio edificio);
 }

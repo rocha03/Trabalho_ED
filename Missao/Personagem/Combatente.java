@@ -4,10 +4,12 @@ public abstract class Combatente {
     protected static final int MAXVIDA = 100;
     protected int vida;
     protected int poder;
-    protected boolean morto;
+    private boolean morto;
+    private boolean emCombate;
 
     public Combatente() {
         this.morto = false;
+        this.emCombate = false;
     }
 
     public int getVida() {
@@ -20,9 +22,17 @@ public abstract class Combatente {
             personagem.morto = true;
     }
 
-    public boolean isMorto() {
+    protected abstract int receberDano(int dano);
+
+    public boolean estaMorto() {
         return morto;
     }
 
-    protected abstract int receberDano(int dano);
+    public boolean estaEmCombate() {
+        return emCombate;
+    }
+
+    public void entrarOuSairCombate(boolean combate) {
+        emCombate = combate;
+    }
 }

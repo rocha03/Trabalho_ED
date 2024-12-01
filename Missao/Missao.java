@@ -1,6 +1,7 @@
 package Missao;
 
 import java.util.Iterator;
+import java.util.Random;
 
 import DataStructs.Queue.LinkedQueue;
 import Enums.TipoItens;
@@ -22,6 +23,7 @@ public class Missao {
     private QueueADT<Inimigo> inimigos;
     private ToCruz toCruz;
     private Itens itens;
+    private boolean missaoConcluida;
     private boolean imported;
 
     public Missao() {
@@ -31,6 +33,7 @@ public class Missao {
         this.inimigos = null;
         this.toCruz = ToCruz.getInstance();
         this.itens = null;
+        this.missaoConcluida = false;
         this.imported = false;
     }
 
@@ -48,28 +51,22 @@ public class Missao {
             // Turno do Tó Cruz
             divisaoAtual = turnoToCruz(divisaoAtual);
 
+            // Turno Inimigos
+            turnoInimigos();
+
             // Verifica condição de vitória ou derrota | Trocar o metodo alvoConcluido
-            if (toCruz.isMorto() && alvoConcluido(divisaoAtual) && edificio.estaNaEntrada(divisaoAtual)) {
+            if (toCruz.estaMorto() || (alvoConcluido(divisaoAtual) && edificio.estaNaEntrada(divisaoAtual))) {
                 jogoAtivo = false;
                 break;
             }
-
-            // Turno Inimigos
-            turnoInimigos();
         }
 
         // Mensagem final
-        if (toCruz.isMorto()) {
+        if (toCruz.estaMorto()) {
             System.out.println("Tó Cruz foi derrotado...");
         } else {
             System.out.println("Missão Concluída com Sucesso!");
         }
-
-        // Tó Cruz move-se
-        toCruz.mover();
-        // TODO Tó Cruz apanha itens
-        // TODO Tó Cruz ataca inimigos ou usa kit
-        // TODO Tó Cruz interage com o Alvo
 
         try {
             QueueADT<Inimigo> temp = new LinkedQueue<Inimigo>();
@@ -78,11 +75,11 @@ public class Missao {
                 // TODO Tó Cruz está na mesma divisão - ataca
 
                 // Inimigo move-se
-                atualInimigo.mover();
+                atualInimigo.mover(edificio);
 
                 // TODO Encontra o Tó Cruz - ataca
 
-                if (!atualInimigo.isMorto())
+                if (!atualInimigo.estaMorto())
                     temp.enqueue(atualInimigo);
             }
             inimigos = temp;
@@ -92,75 +89,88 @@ public class Missao {
     }
 
     private String turnoToCruz(String divisaoAtual) {
-        // Mostrar opções de movimentação
-        System.out.println("Divisão atual: " + divisaoAtual);
-        ListADT<String> adjacentes = edificio.getAdjacentes(divisaoAtual);
-        Iterator<String> iterator = adjacentes.iterator();
+        if (toCruz.estaEmCombate()) {
+            atacarInimigos(divisaoAtual);
+        } else {
+            // Mostrar opções de movimentação
+            System.out.println("Divisão atual: " + divisaoAtual);
+            ListADT<String> adjacentes = edificio.getAdjacentes(divisaoAtual);
+            Iterator<String> iterator = adjacentes.iterator();
 
-        System.out.println("Divisões adjacentes disponíveis:");
-        while (iterator.hasNext()) {
-            System.out.println("- " + iterator.next());
+            System.out.println("Divisões adjacentes disponíveis:");
+            while (iterator.hasNext()) {
+                System.out.println("- " + iterator.next());
+            }
+
+            // TODO Simular escolha do jogador (exemplo: movimentar para a primeira opção)
+            // TODO Opção de usar itens
+            // Aqui poderia ser uma entrada do utilizador, como um scanner
+            String proximaDivisao = "Escolher divisão"; // Substituir por lógica real
+
+            System.out.println("Tó Cruz moveu-se para: " + proximaDivisao);
+
+            // apanhar itens
+            itens.apanharItens(divisaoAtual, toCruz);
+
+            atacarInimigos(proximaDivisao);
+
+            return proximaDivisao;
         }
-
-        // Simular escolha do jogador (exemplo: movimentar para a primeira opção)
-        // Aqui poderia ser uma entrada do utilizador, como um scanner
-        String proximaDivisao = "Escolher divisão"; // Substituir por lógica real
-
-        System.out.println("Tó Cruz moveu-se para: " + proximaDivisao);
-
-        // Verificar interações na nova divisão
-        verificarInteracoes(proximaDivisao);
-
-        return proximaDivisao;
+        return divisaoAtual;
     }
 
     private void turnoInimigos() {
-
-    }
-
-    private void verificarInteracoes(String divisaoAtual) {
-        // Verificar inimigos na divisão atual
         try {
             int tamanho = inimigos.size();
             for (int i = 0; i < tamanho; i++) {
                 Inimigo inimigo = inimigos.dequeue();
 
-                if (inimigo.getDivisao().equals(divisaoAtual)) {
-                    System.out.println("Tó Cruz encontrou inimigos! Iniciando combate.");
-                    protagonista.darDano(inimigo);
-                    if (!inimigo.isBateuAsBotas()) {
-                        inimigo.darDano(protagonista);
-                        inimigos.enqueue(inimigo); // Recoloca o inimigo se não foi derrotado
-                    } else {
-                        System.out.println("Inimigo derrotado!");
-                    }
+                if (inimigo.estaEmCombate()) {
+
                 } else {
-                    inimigos.enqueue(inimigo); // Recoloca inimigo se não está na divisão
+                    inimigo.mover(edificio);
+
+                    // Recolocar inimigo na fila
+                    inimigos.enqueue(inimigo);
                 }
             }
         } catch (EmptyCollectionException e) {
             e.printStackTrace();
         }
+    }
 
-        // Verificar itens na divisão atual
-        Iterator<Item> itensIterator = itens.getItens().iterator();
-        while (itensIterator.hasNext()) {
-            Item item = itensIterator.next();
-            if (item.getDivisao().equals(divisaoAtual)) {
-                System.out.println("Tó Cruz encontrou um item: " + item.getTipo());
-                if (item.getTipo() == TipoItens.KIT_MEDICO) {
-                    protagonista.kitMedico(item);
-                } else if (item.getTipo() == TipoItens.COLETE) {
-                    protagonista.adicionarColete(item.getPontos());
+    private void atacarInimigos(String divisaoAtual) {
+        int salaVazia = 0;
+        try {
+            int tamanho = inimigos.size();
+            for (int i = 0; i < tamanho; i++) {
+                Inimigo inimigo = inimigos.dequeue();
+                if (inimigo.getDivisao().equals(divisaoAtual)) {
+                    toCruz.darDano(inimigo);
+                    if (!inimigo.estaMorto()) {
+                        // inimigo.darDano(toCruz); // turno do inimigo
+                        inimigos.enqueue(inimigo); // Recoloca o inimigo se não foi derrotado
+                        toCruz.entrarOuSairCombate(true);
+                    } else
+                        System.out.println("Inimigo " + inimigo.getNome() + " derrotado!");
+                } else {
+                    // Recoloca inimigo se não está na divisão
+                    inimigos.enqueue(inimigo);
+                    salaVazia++;
                 }
-                itensIterator.remove(); // Remove o item após o uso
             }
+            if (salaVazia == inimigos.size())
+                toCruz.entrarOuSairCombate(false);
+        } catch (EmptyCollectionException e) {
+            // TODO Não há mais inimigos no mapa
         }
     }
 
-    // Metodo errado
+    // verificar com o prof se pode ficar assim
     private boolean alvoConcluido(String divisaoAtual) {
-        return divisaoAtual.equals(edificio.getAlvo().getDivisao());
+        if (divisaoAtual.equals(edificio.getAlvo().getDivisao()))
+            missaoConcluida = true;
+        return missaoConcluida;
     }
 
     protected void setCod_missao(int cod_missao) {
