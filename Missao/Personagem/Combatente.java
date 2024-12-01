@@ -20,5 +20,9 @@ public abstract class Combatente {
             personagem.morto = true;
     }
 
+    public boolean isMorto() {
+        return morto;
+    }
+
     protected abstract int receberDano(int dano);
 }

@@ -65,7 +65,7 @@ public class JSON_Editor {
                 JSONObject inimigoObj = (JSONObject) obj;
             }
 
-            missao.setEdificio(new Edificio(mapa, null));
+            missao.setEdificio(new Edificio(mapa, null, null));
 
             
         } catch (IOException | ParseException e) {
