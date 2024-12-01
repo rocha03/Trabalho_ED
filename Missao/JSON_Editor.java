@@ -37,7 +37,7 @@ public class JSON_Editor {
 
             // Criação do grafo que representará o mapa
             GraphADT<String> mapa = new ArrayGraph<>();
-            processarEdificio(jsonObject, mapa);
+            processarVertices(jsonObject, mapa);
             processarArestas(jsonObject, mapa);
 
             // Lista para armazenar os inimigos
@@ -64,36 +64,31 @@ public class JSON_Editor {
         }
     }
 
-    private void processarEdificio(JSONObject jsonObject, GraphADT<String> mapa) {
+    private void processarVertices(JSONObject jsonObject, GraphADT<String> mapa) {
         JSONArray divisoesArray = (JSONArray) jsonObject.get("edificio");
-        if (divisoesArray == null) {
+        if (divisoesArray == null)
             throw new IllegalArgumentException("Campo 'edificio' ausente ou inválido.");
-        }
 
-        for (Object item : divisoesArray) {
+        for (Object item : divisoesArray)
             mapa.addVertex((String) item);
-        }
     }
 
     private void processarArestas(JSONObject jsonObject, GraphADT<String> mapa) {
         JSONArray arestasArray = (JSONArray) jsonObject.get("ligacoes");
-        if (arestasArray == null) {
+        if (arestasArray == null)
             throw new IllegalArgumentException("Campo 'ligacoes' ausente ou inválido.");
-        }
 
         for (Object item : arestasArray) {
             JSONArray pair = (JSONArray) item;
-            if (pair.size() == 2) {
+            if (pair.size() == 2)
                 mapa.addEdge((String) pair.get(0), (String) pair.get(1));
-            }
         }
     }
 
     private void processarInimigos(JSONObject jsonObject, Queue<Inimigo> inimigosQueue) {
         JSONArray inimigosArray = (JSONArray) jsonObject.get("inimigos");
-        if (inimigosArray == null) {
+        if (inimigosArray == null)
             throw new IllegalArgumentException("Campo 'inimigos' ausente ou inválido.");
-        }
 
         for (Object obj : inimigosArray) {
             JSONObject inimigoObj = (JSONObject) obj;
