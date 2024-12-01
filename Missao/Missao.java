@@ -28,7 +28,7 @@ public class Missao {
         this.cod_missao = 0;
         this.versao = 0;
         this.edificio = null;
-        this.inimigos = z;
+        this.inimigos = null;
         this.toCruz = ToCruz.getInstance();
         this.itens = null;
         this.imported = false;
@@ -37,6 +37,7 @@ public class Missao {
     public void iniciarTurnos() throws NotImportedException {
         if (!imported)
             throw new NotImportedException("Not imported yet!");
+        
         boolean jogoAtivo = true;
         String divisaoAtual;
         do {
