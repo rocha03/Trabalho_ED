@@ -2,8 +2,10 @@ package Missao.Itens;
 
 import java.util.Iterator;
 
+import DataStructs.List.UnorderedList.LinkedUnorderedList;
 import Enums.TipoItens;
 import Interfaces.List.ListADT;
+import Interfaces.List.UnorderedListADT;
 import Missao.Personagem.ToCruz;
 
 public class Itens {
@@ -28,5 +30,12 @@ public class Itens {
         }
     }
 
-    // metodo p verificar se ha
+    public static void main(String[] args) {
+        UnorderedListADT<Item> list = new LinkedUnorderedList<Item>();
+        list.addToRear(new Item("do", 5, TipoItens.KIT_DE_VIDA));
+        list.addToRear(new Item("you", 10, TipoItens.COLETE));
+        list.addToRear(new Item("wanna", 15, TipoItens.KIT_DE_VIDA));
+        list.addToRear(new Item("be", 20, TipoItens.COLETE));
+        Itens itens = new Itens(list);
+    }
 }
