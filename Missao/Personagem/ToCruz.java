@@ -49,6 +49,7 @@ public class ToCruz extends Combatente implements Movivel {
             vida += escudo;
             escudo = 0;
         }
+        if (vida < 0) vida = 0;
         return vida;
     }
 }

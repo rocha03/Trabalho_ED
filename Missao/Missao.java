@@ -28,7 +28,7 @@ public class Missao {
         this.cod_missao = 0;
         this.versao = 0;
         this.edificio = null;
-        this.inimigos = null;
+        this.inimigos = z;
         this.toCruz = ToCruz.getInstance();
         this.itens = null;
         this.imported = false;
