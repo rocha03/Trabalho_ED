@@ -9,20 +9,10 @@ public class Divisao {
     private String nome;
     private UnorderedListADT<Inimigo> inimigos;
     private StackADT<Item> itens;
-    private boolean entrada;
 
     public Divisao(String nome, UnorderedListADT<Inimigo> inimigos, StackADT<Item> itens) {
         this.nome = nome;
         this.inimigos = inimigos;
         this.itens = itens;
-        this.entrada = false;
-    }
-
-    public boolean isEntrada() {
-        return entrada;
-    }
-
-    public void setEntrada(boolean entrada) {
-        this.entrada = entrada;
     }
 }

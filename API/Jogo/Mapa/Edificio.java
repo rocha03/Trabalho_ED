@@ -1,21 +1,22 @@
 package API.Jogo.Mapa;
 
-import DataStructs.List.UnorderedList.LinkedUnorderedList;
-import Interfaces.Graph.GraphADT;
+import java.util.Iterator;
+
 import Interfaces.List.ListADT;
-import Interfaces.List.UnorderedListADT;
 
 public class Edificio {
     private int versao;
-    private GraphADT<Divisao> mapa;
+    private Mapa<Divisao> mapa;
+    private ListADT<Divisao> entradas;
     private Alvo alvo;
 
-    public Edificio(GraphADT<Divisao> mapa, Alvo alvo) {
+    public Edificio(Mapa<Divisao> mapa, Alvo alvo, ListADT<Divisao> entradas) {
         this.mapa = mapa;
         this.alvo = alvo;
+        this.entradas = entradas;
     }
 
-    public GraphADT<Divisao> getMapa() {
+    public Mapa<Divisao> getMapa() {
         return mapa;
     }
 
@@ -23,38 +24,15 @@ public class Edificio {
         return alvo;
     }
 
-    public ListADT<String> getAdjacentes(String posicaoAtual) {
-        UnorderedListADT<String> adjacentes = new LinkedUnorderedList<String>();
-
-        /* if (mapa != null && posicaoAtual != null) {
-            Iterator<String> iterator = mapa.iteratorBFS(posicaoAtual);
-
-            if (iterator.hasNext()) {
-                // Consume the starting node itself (posicaoAtual)
-                iterator.next();
-
-                while (iterator.hasNext()) {
-                    String neighbor = iterator.next();
-
-                    // Check if this is an immediate neighbor by validating a single edge connection
-                    if (isAdjacent(posicaoAtual, neighbor)) {
-                        adjacentes.addToRear(neighbor);
-                    }
-                }
-            }
-        } */
-
-        return adjacentes;
+    public int getVersao() {
+        return versao;
     }
 
-    /* public String ecolherEntrada(String entrada) {
-        if (entradas.contains(entrada)) {
-            return entrada;
-        }
-        return null;
+    public Iterator<Divisao> getEntradas() {
+        return entradas.iterator();
     }
-
-    public boolean estaNaEntrada(String posicaoAtual) {
+    
+    public boolean estaNaEntrada(Divisao posicaoAtual) {
         return entradas.contains(posicaoAtual);
-    } */
+    }
 }

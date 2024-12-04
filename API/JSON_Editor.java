@@ -35,7 +35,7 @@ public class JSON_Editor {
         return instance;
     }
 
-    public void JSON_Read(Missao missao, String filePath) {
+    public Missao JSON_Read(String filePath) {
         JSONParser jsonParser = new JSONParser();
 
         try (FileReader reader = new FileReader(filePath)) {

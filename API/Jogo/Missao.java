@@ -13,18 +13,22 @@ import Interfaces.List.ListADT;
 import Interfaces.List.UnorderedListADT;
 
 public class Missao {
-    private int cod_missao;
+    private String cod_missao;
     private UnorderedListADT<Edificio> edificios;
     private ToCruz toCruz;
     private boolean missaoConcluida;
     private boolean imported;
 
-    public Missao() {
-        this.cod_missao = 0;
-        this.edificios = null;
+    public Missao(String cod_missao, UnorderedListADT<Edificio> edificios) {
+        this.cod_missao = cod_missao;
+        this.edificios = edificios;
         this.toCruz = ToCruz.getInstance();
         this.missaoConcluida = false;
         this.imported = false;
+    }
+
+    public String getCod_missao() {
+        return cod_missao;
     }
 
     public void iniciarTurnos() throws NotImportedException {
@@ -154,25 +158,5 @@ public class Missao {
         if (divisaoAtual.equals(edificio.getAlvo().getDivisao()))
             missaoConcluida = true;
         return missaoConcluida;
-    }
-
-    protected void setCod_missao(int cod_missao) {
-        this.cod_missao = cod_missao;
-    }
-
-    protected void setVersao(int versao) {
-        this.versao = versao;
-    }
-
-    protected void setEdificio(Edificio edificio) {
-        this.edificio = edificio;
-    }
-
-    protected void setInimigos(QueueADT<Inimigo> inimigos) {
-        this.inimigos = inimigos;
-    }
-
-    protected void setItens(Itens itens) {
-        this.itens = itens;
     }
 }

@@ -3,11 +3,10 @@ package API.Jogo.Personagem;
 import java.util.Iterator;
 import java.util.Random;
 
-import API.Interfaces.Movivel;
 import API.Jogo.Mapa.Edificio;
 import Interfaces.List.ListADT;
 
-public class Inimigo extends Combatente implements Movivel {
+public class Inimigo extends Combatente {
     private String nome;
 
     public Inimigo(String nome, int poder) {
@@ -21,11 +20,11 @@ public class Inimigo extends Combatente implements Movivel {
         return nome;
     }
 
-    @Override
+    /* @Deprecated
     public String mover(Edificio edificio) {
         Random random = new Random();
         // Movimentação aleatória para divisões adjacentes
-        ListADT<String> adjacentes = edificio.getAdjacentes(/* this.divisao */ null);
+        ListADT<String> adjacentes = edificio.getAdjacentes(this.divisao);
         Iterator<String> iterator = adjacentes.iterator();
 
         // Selecionar uma divisão aleatória entre as adjacentes
@@ -37,10 +36,10 @@ public class Inimigo extends Combatente implements Movivel {
             novaDivisao = encontrarDivisao(iterator, adjacentes.size() - 1);
         }
 
-        // this.divisao = novaDivisao;
+        this.divisao = novaDivisao;
         return "" + this.nome + " moveu-se para: " + novaDivisao + ".";
 
-    }
+    } */
 
     private String encontrarDivisao(Iterator<String> iterator, int size) {
         Random random = new Random();

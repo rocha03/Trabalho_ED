@@ -1,6 +1,5 @@
 package API.Jogo.Personagem;
 
-import API.Interfaces.Movivel;
 import API.Jogo.Itens.Item;
 import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
@@ -8,7 +7,7 @@ import DataStructs.Stack.LinkedStack;
 import Exceptions.EmptyCollectionException;
 import Interfaces.StackADT;
 
-public class ToCruz extends Combatente implements Movivel {
+public class ToCruz extends Combatente {
     private static ToCruz instance;
     private int escudo;
     private StackADT<Item> mala;
@@ -65,12 +64,6 @@ public class ToCruz extends Combatente implements Movivel {
     public int colete(Item item) {
         escudo += item.getPontos();
         return escudo;
-    }
-
-    @Override
-    public String mover(Edificio edificio) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
