@@ -1,6 +1,7 @@
-package Missao.Itens;
+package API.Jogo.Itens;
 
-import Enums.TipoItens;
+import API.Enums.TipoItens;
+import API.Jogo.Mapa.Divisao;
 
 /**
  * Classe que representa um Item com divisão, pontos e tipo.
@@ -9,7 +10,7 @@ public class Item {
     /**
      * Divisão associada ao item.
      */
-    private String divisao;
+    private Divisao divisao;
 
     /**
      * Pontos atribuídos ao item.
@@ -28,7 +29,7 @@ public class Item {
      * @param pontos Os pontos atribuídos ao item.
      * @param tipo O tipo do item.
      */
-    public Item(String divisao, int pontos, TipoItens tipo) {
+    public Item(Divisao divisao, int pontos, TipoItens tipo) {
         this.divisao = divisao;
         this.pontos = pontos;
         this.tipo = tipo;
@@ -39,7 +40,7 @@ public class Item {
      * 
      * @return A divisão do item.
      */
-    public String getDivisao() {
+    public Divisao getDivisao() {
         return divisao;
     }
 

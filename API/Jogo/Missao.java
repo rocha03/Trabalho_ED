@@ -1,33 +1,28 @@
-package Missao;
+package API.Jogo;
 
 import java.util.Iterator;
 
+import API.Exceptions.NotImportedException;
+import API.Jogo.Itens.Itens;
+import API.Jogo.Mapa.Edificio;
+import API.Jogo.Personagem.Inimigo;
+import API.Jogo.Personagem.ToCruz;
 import Exceptions.EmptyCollectionException;
-import Exceptions.NotImportedException;
 import Interfaces.QueueADT;
 import Interfaces.List.ListADT;
-import Missao.Itens.Itens;
-import Missao.Mapa.Edificio;
-import Missao.Personagem.Inimigo;
-import Missao.Personagem.ToCruz;
+import Interfaces.List.UnorderedListADT;
 
 public class Missao {
     private int cod_missao;
-    private int versao;
-    private Edificio edificio;
-    private QueueADT<Inimigo> inimigos;
+    private UnorderedListADT<Edificio> edificios;
     private ToCruz toCruz;
-    private Itens itens;
     private boolean missaoConcluida;
     private boolean imported;
 
     public Missao() {
         this.cod_missao = 0;
-        this.versao = 0;
-        this.edificio = null;
-        this.inimigos = null;
+        this.edificios = null;
         this.toCruz = ToCruz.getInstance();
-        this.itens = null;
         this.missaoConcluida = false;
         this.imported = false;
     }
@@ -150,7 +145,8 @@ public class Missao {
         if (inimigo.getDivisao().equals(toCruz.getDivisao())) {
             inimigo.darDano(toCruz);
             inimigo.entrarOuSairCombate(true);
-        } else inimigo.entrarOuSairCombate(false);
+        } else
+            inimigo.entrarOuSairCombate(false);
     }
 
     // verificar com o prof se pode ficar assim

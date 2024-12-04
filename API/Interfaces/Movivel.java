@@ -1,6 +1,6 @@
-package Interfaces;
+package API.Interfaces;
 
-import Missao.Mapa.Edificio;
+import API.Jogo.Mapa.Edificio;
 
 public interface Movivel {
     public String mover(Edificio edificio);

@@ -1,17 +1,18 @@
-package Missao.Personagem;
+package API.Jogo.Personagem;
 
+import API.Interfaces.Movivel;
+import API.Jogo.Itens.Item;
+import API.Jogo.Mapa.Divisao;
+import API.Jogo.Mapa.Edificio;
 import DataStructs.Stack.LinkedStack;
 import Exceptions.EmptyCollectionException;
-import Interfaces.Movivel;
 import Interfaces.StackADT;
-import Missao.Itens.Item;
-import Missao.Mapa.Edificio;
 
 public class ToCruz extends Combatente implements Movivel {
     private static ToCruz instance;
     private int escudo;
     private StackADT<Item> mala;
-    private String divisao;
+    private Divisao divisao;
 
     private ToCruz() {
         super();
@@ -32,11 +33,11 @@ public class ToCruz extends Combatente implements Movivel {
         return escudo;
     }
 
-    public String getDivisao() {
+    public Divisao getDivisao() {
         return divisao;
     }
 
-    public void setDivisao(String divisao) {
+    public void setDivisao(Divisao divisao) {
         this.divisao = divisao;
     }
 

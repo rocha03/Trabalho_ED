@@ -1,15 +1,15 @@
-package Missao.Mapa;
+package API.Jogo.Mapa;
 
 public class Alvo {
-    private String divisao;
+    private Divisao divisao;
     private String tipo; // mudar p enum??
 
-    public Alvo(String divisao, String tipo) {
+    public Alvo(Divisao divisao, String tipo) {
         this.divisao = divisao;
         this.tipo = tipo;
     }
 
-    public String getDivisao() {
+    public Divisao getDivisao() {
         return divisao;
     }
     

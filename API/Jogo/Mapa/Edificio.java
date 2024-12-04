@@ -1,4 +1,4 @@
-package Missao.Mapa;
+package API.Jogo.Mapa;
 
 import DataStructs.List.UnorderedList.LinkedUnorderedList;
 import Interfaces.Graph.GraphADT;
@@ -6,17 +6,16 @@ import Interfaces.List.ListADT;
 import Interfaces.List.UnorderedListADT;
 
 public class Edificio {
-    private GraphADT<String> mapa;
-    private ListADT<String> entradas;
+    private int versao;
+    private GraphADT<Divisao> mapa;
     private Alvo alvo;
 
-    public Edificio(GraphADT<String> mapa, ListADT<String> entradas, Alvo alvo) {
+    public Edificio(GraphADT<Divisao> mapa, Alvo alvo) {
         this.mapa = mapa;
-        this.entradas = entradas;
         this.alvo = alvo;
     }
 
-    public GraphADT<String> getMapa() {
+    public GraphADT<Divisao> getMapa() {
         return mapa;
     }
 
@@ -48,7 +47,7 @@ public class Edificio {
         return adjacentes;
     }
 
-    public String ecolherEntrada(String entrada) {
+    /* public String ecolherEntrada(String entrada) {
         if (entradas.contains(entrada)) {
             return entrada;
         }
@@ -57,5 +56,5 @@ public class Edificio {
 
     public boolean estaNaEntrada(String posicaoAtual) {
         return entradas.contains(posicaoAtual);
-    }
+    } */
 }

@@ -1,4 +1,4 @@
-package Exceptions;
+package API.Exceptions;
 
 public class NotImportedException extends Exception {
     public NotImportedException() {

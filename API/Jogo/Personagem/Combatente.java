@@ -1,4 +1,4 @@
-package Missao.Personagem;
+package API.Jogo.Personagem;
 
 public abstract class Combatente {
     protected static final int MAXVIDA = 100;
