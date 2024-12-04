@@ -3,7 +3,6 @@ package API.Jogo;
 import java.util.Iterator;
 
 import API.Exceptions.NotImportedException;
-import API.Jogo.Itens.Itens;
 import API.Jogo.Mapa.Edificio;
 import API.Jogo.Personagem.Inimigo;
 import API.Jogo.Personagem.ToCruz;

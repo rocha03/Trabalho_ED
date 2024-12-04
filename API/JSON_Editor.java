@@ -11,13 +11,16 @@ import org.json.simple.parser.ParseException;
 import API.Enums.TipoItens;
 import API.Jogo.Missao;
 import API.Jogo.Itens.Item;
-import API.Jogo.Itens.Itens;
 import API.Jogo.Mapa.Alvo;
+import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
+import API.Jogo.Mapa.Mapa;
 import API.Jogo.Personagem.Inimigo;
 import DataStructs.Graph.ArrayGraph;
 import DataStructs.List.UnorderedList.LinkedUnorderedList;
 import DataStructs.Queue.LinkedQueue;
+import Exceptions.ElementNotFoundException;
+import Exceptions.EmptyCollectionException;
 import Interfaces.QueueADT;
 import Interfaces.Graph.GraphADT;
 import Interfaces.List.ListADT;
@@ -41,22 +44,20 @@ public class JSON_Editor {
         try (FileReader reader = new FileReader(filePath)) {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
 
-            // Configura informação básica da missão
-            configurarMissao(jsonObject, missao);
+            // Configura informação básica da missão e versão
+            String codigo = processarCodigo(jsonObject);
+            int versao = processarVersao(jsonObject);
 
             // Criação do grafo que representará o mapa
-            GraphADT<String> mapa = new ArrayGraph<>();
+            Mapa<Divisao> mapa = new Mapa<>();
             processarVertices(jsonObject, mapa);
             processarArestas(jsonObject, mapa);
-
-            // Lista para armazenar os inimigos
-            processarInimigos(jsonObject, missao);
 
             // Processar Itens
             processarItens(jsonObject, missao);
 
             // Edificio como um todo
-            missao.setEdificio(new Edificio(mapa, processarEntradas(jsonObject), processarAlvo(jsonObject)));
+            Edificio edificio = new Edificio(mapa, processarAlvo(jsonObject), processarEntradas(jsonObject));
 
         } catch (IOException | ParseException e) {
             System.err.println("Erro ao ler o arquivo JSON: " + e.getMessage());
@@ -64,54 +65,72 @@ public class JSON_Editor {
         }
     }
 
-    private void configurarMissao(JSONObject jsonObject, Missao missao) {
+    private String processarCodigo(JSONObject jsonObject) {
         Object codMissaoObj = jsonObject.get("cod-misao");
-        Object versaoObj = jsonObject.get("versao");
 
-        if (codMissaoObj instanceof Long && versaoObj instanceof Long) {
-            missao.setCod_missao(((Long) codMissaoObj).intValue());
-            missao.setCod_missao(((Long) versaoObj).intValue());
+        if (codMissaoObj instanceof String) {
+            return (String) codMissaoObj;
         } else {
             throw new IllegalArgumentException("Campos cod-missao ou versao ausentes ou inválidos.");
         }
     }
 
-    private void processarVertices(JSONObject jsonObject, GraphADT<String> mapa) {
+    private int processarVersao(JSONObject jsonObject) {
+        Object versaoObj = jsonObject.get("versao");
+
+        if (versaoObj instanceof Long) {
+            return ((Long) versaoObj).intValue();
+        } else {
+            throw new IllegalArgumentException("Campos cod-missao ou versao ausentes ou inválidos.");
+        }
+    }
+
+    private void processarVertices(JSONObject jsonObject, Mapa<Divisao> mapa) {
         JSONArray divisoesArray = (JSONArray) jsonObject.get("edificio");
         if (divisoesArray == null)
             throw new IllegalArgumentException("Campo 'edificio' ausente ou inválido.");
 
         for (Object item : divisoesArray)
-            mapa.addVertex((String) item);
+            mapa.addVertex(new Divisao((String) item, processarInimigos(jsonObject, (String) item), null));
     }
 
-    private void processarArestas(JSONObject jsonObject, GraphADT<String> mapa) {
+    private void processarArestas(JSONObject jsonObject, Mapa<Divisao> mapa) {
         JSONArray arestasArray = (JSONArray) jsonObject.get("ligacoes");
         if (arestasArray == null)
             throw new IllegalArgumentException("Campo 'ligacoes' ausente ou inválido.");
 
-        for (Object item : arestasArray) {
-            JSONArray pair = (JSONArray) item;
-            if (pair.size() == 2)
-                mapa.addEdge((String) pair.get(0), (String) pair.get(1));
+        try {
+            for (Object item : arestasArray) {
+                JSONArray pair = (JSONArray) item;
+                if (pair.size() == 2) {
+                    Divisao d1 = new Divisao((String) pair.get(0), null, null);
+                    Divisao d2 = new Divisao((String) pair.get(1), null, null);
+
+                    mapa.addEdge(mapa.getVertex(d1), mapa.getVertex(d2));
+                }
+            }
+        } catch (ElementNotFoundException | EmptyCollectionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
-    private void processarInimigos(JSONObject jsonObject, Missao missao) {
+    private UnorderedListADT<Inimigo> processarInimigos(JSONObject jsonObject, String divisao) {
         JSONArray inimigosArray = (JSONArray) jsonObject.get("inimigos");
         if (inimigosArray == null)
             throw new IllegalArgumentException("Campo 'inimigos' ausente ou inválido.");
 
-        QueueADT<Inimigo> inimigos = new LinkedQueue<Inimigo>();
+        UnorderedListADT<Inimigo> inimigos = new LinkedUnorderedList<Inimigo>();
         for (Object obj : inimigosArray) {
             JSONObject inimigoObj = (JSONObject) obj;
             String nome = (String) inimigoObj.get("nome");
             int poder = ((Long) inimigoObj.get("poder")).intValue();
-            String divisao = (String) inimigoObj.get("divisao");
+            String destino = (String) inimigoObj.get("divisao");
 
-            inimigos.enqueue(new Inimigo(nome, poder, divisao));
+            if (divisao.equals(destino))
+                inimigos.addToRear(new Inimigo(nome, poder));
         }
-        missao.setInimigos(inimigos);
+        return inimigos;
     }
 
     private Alvo processarAlvo(JSONObject jsonObject) {
@@ -120,19 +139,19 @@ public class JSON_Editor {
             throw new IllegalArgumentException("Campo 'alvo' ausente ou inválido.");
         }
 
-        return new Alvo((String) alvoObj.get("divisao"), (String) alvoObj.get("tipo"));
+        return new Alvo(new Divisao((String) alvoObj.get("divisao"), null, null), (String) alvoObj.get("tipo"));
     }
 
-    private ListADT<String> processarEntradas(JSONObject jsonObject) {
+    private ListADT<Divisao> processarEntradas(JSONObject jsonObject) {
         JSONArray entradasArray = (JSONArray) jsonObject.get("entradas-saidas");
         if (entradasArray == null)
             throw new IllegalArgumentException("Campo 'entradas-saidas' ausente ou inválido.");
 
-        UnorderedListADT<String> entradas = new LinkedUnorderedList<String>();
+        UnorderedListADT<Divisao> entradas = new LinkedUnorderedList<Divisao>();
         for (Object obj : entradasArray) {
-            entradas.addToRear((String) obj);
+            entradas.addToRear(new Divisao((String) obj, null, null));
         }
-        return (ListADT<String>) entradas;
+        return (ListADT<Divisao>) entradas;
     }
 
     private void processarItens(JSONObject jsonObject, Missao missao) {

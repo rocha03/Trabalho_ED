@@ -8,11 +8,6 @@ import API.Jogo.Mapa.Divisao;
  */
 public class Item {
     /**
-     * Divisão associada ao item.
-     */
-    private Divisao divisao;
-
-    /**
      * Pontos atribuídos ao item.
      */
     private int pontos;
@@ -29,19 +24,9 @@ public class Item {
      * @param pontos Os pontos atribuídos ao item.
      * @param tipo O tipo do item.
      */
-    public Item(Divisao divisao, int pontos, TipoItens tipo) {
-        this.divisao = divisao;
+    public Item(int pontos, TipoItens tipo) {
         this.pontos = pontos;
         this.tipo = tipo;
-    }
-
-    /**
-     * Obtém a divisão associada ao item.
-     * 
-     * @return A divisão do item.
-     */
-    public Divisao getDivisao() {
-        return divisao;
     }
 
     /**
