@@ -56,8 +56,13 @@ public class JSON_Editor {
             // Processar Itens
             processarItens(jsonObject, missao);
 
+            // Reconhencer o alvo
+            Alvo alvo = processarAlvo(jsonObject, mapa);
+
+            //
+
             // Edificio como um todo
-            Edificio edificio = new Edificio(mapa, processarAlvo(jsonObject), processarEntradas(jsonObject));
+            Edificio edificio = new Edificio(mapa, alvo, processarEntradas(jsonObject));
 
         } catch (IOException | ParseException e) {
             System.err.println("Erro ao ler o arquivo JSON: " + e.getMessage());
@@ -133,13 +138,19 @@ public class JSON_Editor {
         return inimigos;
     }
 
-    private Alvo processarAlvo(JSONObject jsonObject) {
+    private Alvo processarAlvo(JSONObject jsonObject, Mapa<Divisao> mapa) {
         JSONObject alvoObj = (JSONObject) jsonObject.get("alvo");
         if (alvoObj == null) {
             throw new IllegalArgumentException("Campo 'alvo' ausente ou inválido.");
         }
-
-        return new Alvo(new Divisao((String) alvoObj.get("divisao"), null, null), (String) alvoObj.get("tipo"));
+        try {
+            Divisao alvo = new Divisao((String) alvoObj.get("divisao"), null, null);
+            return new Alvo(mapa.getVertex(alvo), (String) alvoObj.get("tipo"));
+        } catch (ElementNotFoundException | EmptyCollectionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private ListADT<Divisao> processarEntradas(JSONObject jsonObject) {

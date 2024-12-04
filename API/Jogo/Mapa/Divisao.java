@@ -2,6 +2,8 @@ package API.Jogo.Mapa;
 
 import API.Jogo.Itens.Item;
 import API.Jogo.Personagem.Inimigo;
+import Exceptions.ElementNotFoundException;
+import Exceptions.EmptyCollectionException;
 import Interfaces.StackADT;
 import Interfaces.List.UnorderedListADT;
 
@@ -14,6 +16,22 @@ public class Divisao {
         this.nome = nome;
         this.inimigos = inimigos;
         this.itens = itens;
+    }
+
+    public Inimigo removerInimigo(Inimigo inimigo) {
+        try {
+            return inimigos.remove(inimigo);
+        } catch (EmptyCollectionException | ElementNotFoundException e) {
+            return null;
+        }
+    }
+
+    public Item removerItem() {
+        try {
+            return itens.pop();
+        } catch (EmptyCollectionException e) {
+            return null; // este pode ficar assim
+        }
     }
 
     @Override
