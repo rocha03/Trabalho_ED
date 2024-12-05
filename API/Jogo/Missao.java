@@ -13,14 +13,14 @@ import Interfaces.List.UnorderedListADT;
 
 public class Missao {
     private String cod_missao;
-    private UnorderedListADT<Edificio> edificios;
+    private UnorderedListADT<Edificio> edificio; // havia abaixo a variavel edificio, e aki estava edificios
     private ToCruz toCruz;
     private boolean missaoConcluida;
     private boolean imported;
 
-    public Missao(String cod_missao, UnorderedListADT<Edificio> edificios) {
+    public Missao(String cod_missao, UnorderedListADT<Edificio> edificio) {
         this.cod_missao = cod_missao;
-        this.edificios = edificios;
+        this.edificio = edificio;
         this.toCruz = ToCruz.getInstance();
         this.missaoConcluida = false;
         this.imported = false;
@@ -49,8 +49,7 @@ public class Missao {
             turnoInimigos();
 
             // Verifica condição de vitória ou derrota | Trocar o metodo alvoConcluido
-            if (toCruz.estaMorto()
-                    || (alvoConcluido(toCruz.getDivisao()) && edificio.estaNaEntrada(toCruz.getDivisao()))) {
+            if (toCruz.estaMorto() || (alvoConcluido(toCruz.getDivisao()) && edificio.estaNaEntrada(toCruz.getDivisao()))) {
                 jogoAtivo = false;
                 break;
             }
