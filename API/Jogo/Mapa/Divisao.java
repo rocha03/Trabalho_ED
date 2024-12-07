@@ -1,5 +1,7 @@
 package API.Jogo.Mapa;
 
+import java.util.Iterator;
+
 import API.Jogo.Itens.Item;
 import API.Jogo.Personagem.Inimigo;
 import Exceptions.ElementNotFoundException;
@@ -20,6 +22,14 @@ public class Divisao {
 
     public String getNome() {
         return nome;
+    }
+
+    public Iterator<Inimigo> getInimigos() {
+        return inimigos.iterator();
+    }
+
+    public int getNumInimigos() {
+        return inimigos.size();
     }
 
     public Inimigo removerInimigo(Inimigo inimigo) {

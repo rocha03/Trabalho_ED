@@ -19,9 +19,9 @@ public class Missao {
     private boolean missaoConcluida;
     private boolean imported;
 
-    public Missao(String cod_missao, UnorderedListADT<Edificio> edificio) {
+    public Missao(String cod_missao, UnorderedListADT<Edificio> edificios) {
         this.cod_missao = cod_missao;
-        this.edificio = edificio;
+        this.edificios = edificios;
         this.toCruz = ToCruz.getInstance();
         this.missaoConcluida = false;
         this.imported = false;
@@ -38,7 +38,7 @@ public class Missao {
     public Edificio getEdificio(int num) {
         Iterator<Edificio> iterator = edificios.iterator();
         int i = 0;
-        while (i < num) {
+        while (i < num-1) {
             iterator.next();
             i++;
         }

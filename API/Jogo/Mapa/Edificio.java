@@ -46,7 +46,7 @@ public class Edificio {
     public Divisao getEntrada(int num) {
         Iterator<Divisao> iterator = entradas.iterator();
         int i = 0;
-        while (i < num) {
+        while (i < num-1) {
             iterator.next();
             i++;
         }

@@ -1,5 +1,7 @@
 package API.Jogo.Personagem;
 
+import java.util.Iterator;
+
 import API.Jogo.Itens.Item;
 import API.Jogo.Mapa.Divisao;
 import DataStructs.Stack.LinkedStack;
@@ -74,6 +76,19 @@ public class ToCruz extends Combatente {
         }
         if (vida < 0) vida = 0;
         return vida;
+    }
+
+    public void atacar() {
+        Iterator<Inimigo> iterator = divisao.getInimigos();
+        Inimigo inimigo;
+        while (iterator.hasNext()) {
+            inimigo = iterator.next();
+            darDano(inimigo);
+        }
+        if (divisao.getNumInimigos() == 0) {
+            entrarOuSairCombate(false);
+        }
+        // remover inimigos mortos
     }
     
 }
