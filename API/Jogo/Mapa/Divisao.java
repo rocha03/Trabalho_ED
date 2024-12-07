@@ -45,7 +45,6 @@ public class Divisao {
 
         Divisao other = (Divisao) obj;
         
-        // return Objects.equals(nome, other.nome); // Objects.equals: Substitui manualmente a verificação de null e a chamada ao método equals. Ele cuida disso internamente.
         if (nome == null) {
             if (other.nome != null)
                 return false;

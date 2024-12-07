@@ -11,10 +11,10 @@ import Interfaces.List.UnorderedListADT;
 public class Mapa<T> extends ArrayGraph<T> {
 
     public Iterator<T> getAdjacentes(T vertex) {
-        int vertexIndex = getIndex(vertex); // não estava visivel
+        int vertexIndex = getIndex(vertex);
 
         // If the vertex is invalid, return an empty iterator
-        if (!indexIsValid(vertexIndex)) // a mesma coisa
+        if (!indexIsValid(vertexIndex))
             return new ArrayUnorderedList<T>().iterator();
 
         UnorderedListADT<T> adjacentVertices = new ArrayUnorderedList<>();

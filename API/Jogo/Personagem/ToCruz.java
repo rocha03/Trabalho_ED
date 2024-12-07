@@ -2,7 +2,6 @@ package API.Jogo.Personagem;
 
 import API.Jogo.Itens.Item;
 import API.Jogo.Mapa.Divisao;
-import API.Jogo.Mapa.Edificio;
 import DataStructs.Stack.LinkedStack;
 import Exceptions.EmptyCollectionException;
 import Interfaces.StackADT;

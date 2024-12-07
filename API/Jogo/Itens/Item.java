@@ -1,7 +1,6 @@
 package API.Jogo.Itens;
 
 import API.Enums.TipoItens;
-import API.Jogo.Mapa.Divisao;
 
 /**
  * Classe que representa um Item com divisão, pontos e tipo.
