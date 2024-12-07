@@ -18,6 +18,10 @@ public class Divisao {
         this.itens = itens;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
     public Inimigo removerInimigo(Inimigo inimigo) {
         try {
             return inimigos.remove(inimigo);

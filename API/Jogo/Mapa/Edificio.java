@@ -2,6 +2,7 @@ package API.Jogo.Mapa;
 
 import java.util.Iterator;
 
+import API.Jogo.Missao;
 import Interfaces.List.ListADT;
 
 public class Edificio {
@@ -28,8 +29,28 @@ public class Edificio {
         return versao;
     }
 
-    public Iterator<Divisao> getEntradas() {
-        return entradas.iterator();
+    public int getNumEntradas() {
+        return entradas.size();
+    }
+
+    public String verEntradas() {
+        Iterator<Divisao> iterator = entradas.iterator();
+
+        String escolhas = "Escolha uma entrada:\n";
+        for (int i = 0; i < entradas.size(); i++) {
+            escolhas += " "+ (i + 1) + ". " + iterator.next().getNome();
+        }
+        return escolhas;
+    }
+
+    public Divisao getEntrada(int num) {
+        Iterator<Divisao> iterator = entradas.iterator();
+        int i = 0;
+        while (i < num) {
+            iterator.next();
+            i++;
+        }
+        return iterator.next();
     }
     
     public boolean estaNaEntrada(Divisao posicaoAtual) {

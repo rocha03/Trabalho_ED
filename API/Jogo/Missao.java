@@ -14,6 +14,7 @@ import Interfaces.List.UnorderedListADT;
 public class Missao {
     private String cod_missao;
     private UnorderedListADT<Edificio> edificios;
+    //
     private ToCruz toCruz;
     private boolean missaoConcluida;
     private boolean imported;
@@ -28,6 +29,20 @@ public class Missao {
 
     public String getCod_missao() {
         return cod_missao;
+    }
+
+    public int getNumMapas() {
+        return edificios.size();
+    }
+
+    public Edificio getEdificio(int num) {
+        Iterator<Edificio> iterator = edificios.iterator();
+        int i = 0;
+        while (i < num) {
+            iterator.next();
+            i++;
+        }
+        return iterator.next();
     }
 
     public void iniciarTurnos() throws NotImportedException {
