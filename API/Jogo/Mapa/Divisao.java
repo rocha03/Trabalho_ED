@@ -11,8 +11,8 @@ import Interfaces.List.UnorderedListADT;
 
 public class Divisao {
     private String nome;
-    private UnorderedListADT<Inimigo> inimigos;
     private StackADT<Item> itens;
+    private UnorderedListADT<Inimigo> inimigos;
 
     public Divisao(String nome, UnorderedListADT<Inimigo> inimigos, StackADT<Item> itens) {
         this.nome = nome;
@@ -37,6 +37,21 @@ public class Divisao {
             return inimigos.remove(inimigo);
         } catch (EmptyCollectionException | ElementNotFoundException e) {
             return null;
+        }
+    }
+
+    public void removerInimigosMortos() throws EmptyCollectionException {
+        Iterator<Inimigo> it = inimigos.iterator(); // Iterador da lista de inimigos
+
+        while (it.hasNext()) {
+            Inimigo inimigo = it.next();
+            if (inimigo.estaMorto()) {
+                try {
+                    inimigos.remove(inimigo); // Remove o inimigo morto
+                } catch (ElementNotFoundException e) {
+                    System.out.println(e);
+                }
+            }
         }
     }
 
