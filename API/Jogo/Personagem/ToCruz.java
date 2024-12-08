@@ -86,7 +86,8 @@ public class ToCruz extends Combatente {
             vida += escudo;
             escudo = 0;
         }
-        if (vida < 0) vida = 0;
+        if (vida < 0)
+            vida = 0;
         return vida;
     }
 
@@ -99,8 +100,9 @@ public class ToCruz extends Combatente {
         }
         if (divisao.getNumInimigos() == 0) {
             entrarOuSairCombate(false);
+            System.err.println("Inimigos derrotados!");
         }
         // TODO remover inimigos mortos
     }
-    
+
 }
