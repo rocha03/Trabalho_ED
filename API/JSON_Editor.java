@@ -9,6 +9,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import API.Enums.TipoItens;
+import API.Jogo.Jogo;
 import API.Jogo.Missao;
 import API.Jogo.Itens.Item;
 import API.Jogo.Mapa.Alvo;
@@ -28,6 +29,7 @@ import Interfaces.List.UnorderedListADT;
 
 public class JSON_Editor {
     private static JSON_Editor instance;
+    private static final Jogo jogo = Jogo.getInstance();
 
     private JSON_Editor() {
     }
