@@ -78,66 +78,24 @@ public class Jogo {
         }
     }
 
-    private boolean turnoToCruzManual(Scanner scanner) {
+    private boolean turnoToCruzManual(Edificio edificio, Scanner scanner) {
 
         boolean jogadorEmCombate = toCruz.estaEmCombate();
+        boolean itemUsado = true;
         int op = 0;
+
         do {
-            System.out.println(jogadorEmCombate ? "Escolher ação (Combate):" : "Escolher ação:");
-            System.out.println(" 1. " + (jogadorEmCombate ? "Atacar" : "Mover"));
-            System.out.println(" 2. Usar Kit.");
-            op = scanner.nextInt();
-        } while (op <= 0 || op > 3);
-        switch (op) {
-            case 1:
-                if (jogadorEmCombate) {
-                    toCruz.atacar();
-                } else {
-                    // Logica de mover
-                    System.err.println("Mover...");
-                }
-                break;
-            case 2:
-                System.out.println(toCruz.usarMedKit());
-                break;
-        }
-        if (toCruz.estaEmCombate()) {
-            //int op = 0;
-            
             do {
-                do {
-                    System.out.println("Escolher ação:");
-                    System.out.println(" 1. Atacar;");
-                    System.out.println(" 2. Usar Kit.");
-                    op = scanner.nextInt();
-                } while (op <= 0 || op > 3);
-                switch (op) {
-                    case 1:
+                System.out.println(jogadorEmCombate ? "Escolher ação (Combate):" : "Escolher ação:");
+                System.out.println(" 1. " + (jogadorEmCombate ? "Atacar" : "Mover"));
+                System.out.println(" 2. Usar Kit.");
+                op = scanner.nextInt();
+            } while (op <= 0 || op > 3);
+            switch (op) {
+                case 1:
+                    if (jogadorEmCombate) {
                         toCruz.atacar();
-                        break;
-                    case 2:
-                        if (toCruz.usarMedKit()) {
-                            System.out.println("Kit usado com sucesso!");
-                            itemUsado = true;
-                        } else {
-                            System.out.println("Não tem mais kits!");
-                            itemUsado = false;
-                        }
-                        break;
-                }
-            } while (!itemUsado);
-        } else {
-            int op = 0;
-            boolean itemUsado = true;
-            do {
-                do {
-                    System.out.println("Escolher ação:");
-                    System.out.println(" 1. Mover;");
-                    System.out.println(" 2. Usar Kit.");
-                    op = scanner.nextInt();
-                } while (op <= 0 || op > 3);
-                switch (op) {
-                    case 1:
+                    } else {
                         // mover
                         // Mostrar opções de movimentação
                         int option = 0, i = 0;
@@ -154,20 +112,22 @@ public class Jogo {
                         } while (option <= 0 || option > i);
                         // TODO mover
                         toCruz.atacar();
-                        break;
-                    case 2:
-                        if (toCruz.usarMedKit()) {
-                            System.out.println("Kit usado com sucesso!");
-                            itemUsado = true;
-                        } else {
-                            System.out.println("Não tem mais kits!");
-                            itemUsado = false;
-                        }
-                        break;
-                }
-            } while (!itemUsado);
-        }
-        if (!toCruz.estaEmCombate())
+                        System.err.println("Mover...");
+                    }
+                    break;
+                case 2:
+                    if (toCruz.usarMedKit()) {
+                        System.out.println("Kit usado com sucesso!");
+                        itemUsado = true;
+                    } else {
+                        System.out.println("Não tem mais kits!");
+                        itemUsado = false;
+                    }
+                    break;
+            }
+        } while (!itemUsado);
+
+        if (!jogadorEmCombate)
             toCruz.apanharItens();
         return false;
     }
