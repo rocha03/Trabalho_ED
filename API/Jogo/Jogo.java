@@ -81,7 +81,7 @@ public class Jogo {
     private boolean turnoToCruzManual(Edificio edificio, Scanner scanner) {
 
         boolean jogadorEmCombate = toCruz.estaEmCombate();
-        boolean itemUsado = true;
+        boolean itemUsado = true, instakill = false;
         int op = 0;
 
         do {
@@ -96,9 +96,7 @@ public class Jogo {
                     if (jogadorEmCombate) {
                         toCruz.atacar();
                     } else {
-                        // mover
-                        // Mostrar opções de movimentação
-                        int option = 0, i = 0;
+                        int option = 0, i = 0, j = 1;
                         do {
                             System.out.println("Divisão atual: " + toCruz.getDivisao());
                             System.out.println("Divisões adjacentes disponíveis:");
@@ -110,7 +108,20 @@ public class Jogo {
                             }
                             option = scanner.nextInt();
                         } while (option <= 0 || option > i);
-                        // TODO mover
+                        Iterator<Divisao> iterator = edificio.getAdjacentes(toCruz.getDivisao());
+                        while (iterator.hasNext() && j != option) {
+                            iterator.next();
+                            j++;
+                        }
+                        toCruz.setDivisao(iterator.next());
+
+                        if (toCruz.getDivisao().getNumInimigos() > 0) {
+                            toCruz.atacar();
+                            if (toCruz.getDivisao().getNumInimigos() > 0)
+                                toCruz.entrarOuSairCombate(true);
+                            else
+                                instakill = true;
+                        }
                         toCruz.atacar();
                         System.err.println("Mover...");
                     }
@@ -129,7 +140,7 @@ public class Jogo {
 
         if (!jogadorEmCombate)
             toCruz.apanharItens();
-        return false;
+        return instakill;
     }
 
     public boolean turnoToCruzAutomatico(Edificio edificio) {
