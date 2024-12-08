@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 import API.Jogo.Mapa.Divisao;
+import API.Jogo.Mapa.Edificio;
 import API.Jogo.Personagem.ToCruz;
 import DataStructs.List.UnorderedList.LinkedUnorderedList;
 import Interfaces.List.UnorderedListADT;
@@ -52,57 +53,110 @@ public class Jogo {
         return iterator.next();
     }
 
-    public void iniciarTurnos(Divisao entrada, Scanner scanner) {
+    public void iniciarTurnos(Edificio edificio, Divisao entrada, Scanner scanner) {
         boolean jogoAtivo = true;
-        boolean intakill = false;
+        boolean instakill = false;
+        boolean alvoConcluido = false;
         toCruz.setDivisao(entrada);
 
         while (jogoAtivo) {
-            intakill = turnoToCruzManual(scanner);
-            if (!intakill) {
+            // Turno To Cruz
+            instakill = turnoToCruzManual(edificio, scanner);
+            // Interagir com o Alvo
+            if (!toCruz.estaEmCombate() && edificio.getAlvo().getDivisao().equals(toCruz.getDivisao()))
+                alvoConcluido = true;
+            if (!instakill) {
                 // turno inimigos
             }
         }
+
+        // Mensagem final
+        if (toCruz.estaMorto()) {
+            System.out.println("Tó Cruz foi derrotado...");
+        } else {
+            System.out.println("Missão Concluída com Sucesso!");
+        }
     }
 
-    private boolean turnoToCruzManual(Scanner scanner) {
+    private boolean turnoToCruzManual(Edificio edificio, Scanner scanner) {
         if (toCruz.estaEmCombate()) {
             int op = 0;
+            boolean itemUsado = true;
             do {
-                System.out.println("Escolher ação:");
-                System.out.println(" 1. Atacar;");
-                System.out.println(" 2. Usar Kit.");
-                op = scanner.nextInt();
-            } while (op <= 0 || op > 3);
-            switch (op) {
-                case 1:
-                    toCruz.atacar();
-                    break;
-                case 2:
-                    System.out.println(toCruz.usarMedKit());
-                    break;
-            }
+                do {
+                    System.out.println("Escolher ação:");
+                    System.out.println(" 1. Atacar;");
+                    System.out.println(" 2. Usar Kit.");
+                    op = scanner.nextInt();
+                } while (op <= 0 || op > 3);
+                switch (op) {
+                    case 1:
+                        toCruz.atacar();
+                        break;
+                    case 2:
+                        if (toCruz.usarMedKit()) {
+                            System.out.println("Kit usado com sucesso!");
+                            itemUsado = true;
+                        } else {
+                            System.out.println("Não tem mais kits!");
+                            itemUsado = false;
+                        }
+                        break;
+                }
+            } while (!itemUsado);
         } else {
             int op = 0;
+            boolean itemUsado = true;
             do {
-                System.out.println("Escolher ação:");
-                System.out.println(" 1. Mover;");
-                System.out.println(" 2. Usar Kit.");
-                op = scanner.nextInt();
-            } while (op <= 0 || op > 3);
-            switch (op) {
-                case 1:
-                    // mover
-                    break;
-                case 2:
-                    System.out.println(toCruz.usarMedKit());
-                    break;
-            }
+                do {
+                    System.out.println("Escolher ação:");
+                    System.out.println(" 1. Mover;");
+                    System.out.println(" 2. Usar Kit.");
+                    op = scanner.nextInt();
+                } while (op <= 0 || op > 3);
+                switch (op) {
+                    case 1:
+                        // mover
+                        // Mostrar opções de movimentação
+                        int option = 0, i = 0;
+                        do {
+                            System.out.println("Divisão atual: " + toCruz.getDivisao());
+                            System.out.println("Divisões adjacentes disponíveis:");
+                            Iterator<Divisao> iterator = edificio.getAdjacentes(toCruz.getDivisao());
+                            i = 0;
+                            while (iterator.hasNext()) {
+                                System.out.println(" 1. " + iterator.next());
+                                i++;
+                            }
+                            option = scanner.nextInt();
+                        } while (option <= 0 || option > i);
+                        // TODO mover
+                        toCruz.atacar();
+                        break;
+                    case 2:
+                        if (toCruz.usarMedKit()) {
+                            System.out.println("Kit usado com sucesso!");
+                            itemUsado = true;
+                        } else {
+                            System.out.println("Não tem mais kits!");
+                            itemUsado = false;
+                        }
+                        break;
+                }
+            } while (!itemUsado);
         }
-        if (!toCruz.estaEmCombate()) {
-            // apanhar itens
-            // interagir com o alvo
-        }
+        if (!toCruz.estaEmCombate())
+            toCruz.apanharItens();
         return false;
+    }
+
+    public boolean turnoToCruzAutomatico(Edificio edificio) {
+        // TODO
+        return false;
+    }
+
+    public void turnoInimigos(Edificio edificio) {
+        Iterator<Divisao> divisoes = edificio.getMapa().iteratorDFS(toCruz.getDivisao());
+        divisoes.next();
     }
 }

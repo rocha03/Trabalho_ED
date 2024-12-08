@@ -13,6 +13,7 @@ public class ToCruz extends Combatente {
     private int escudo;
     private StackADT<Item> mala;
     private Divisao divisao;
+    private boolean alvoConcluido;
 
     private ToCruz() {
         super();
@@ -21,12 +22,21 @@ public class ToCruz extends Combatente {
         poder = 20;
         mala = new LinkedStack<Item>();
         divisao = null;
+        alvoConcluido = false;
     }
 
     public static ToCruz getInstance() {
         if (instance == null)
             instance = new ToCruz();
         return instance;
+    }
+
+    public boolean alvoEstaConcluido() {
+        return alvoConcluido;
+    }
+
+    public void alvoFoiConcluido() {
+        this.alvoConcluido = true;
     }
 
     public int getEscudo() {
@@ -41,17 +51,19 @@ public class ToCruz extends Combatente {
         this.divisao = divisao;
     }
 
-    public void encherMala(Item item) {
-        mala.push(item);
+    public void apanharItens() {
+        Item item;
+        while ((item = divisao.removerItem()) != null)
+            mala.push(item);
     }
 
-    public String usarMedKit() {
+    public boolean usarMedKit() {
         try {
             Item item = mala.pop();
             medKit(item);
-            return "Kit Médico usado!";
+            return true;
         } catch (EmptyCollectionException e) {
-            return "Não tem Kits Médicos";
+            return false;
         }
     }
 
@@ -88,7 +100,7 @@ public class ToCruz extends Combatente {
         if (divisao.getNumInimigos() == 0) {
             entrarOuSairCombate(false);
         }
-        // remover inimigos mortos
+        // TODO remover inimigos mortos
     }
     
 }

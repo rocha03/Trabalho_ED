@@ -2,7 +2,6 @@ package API.Jogo.Mapa;
 
 import java.util.Iterator;
 
-import API.Jogo.Missao;
 import Interfaces.List.ListADT;
 
 public class Edificio {
@@ -55,5 +54,9 @@ public class Edificio {
     
     public boolean estaNaEntrada(Divisao posicaoAtual) {
         return entradas.contains(posicaoAtual);
+    }
+
+    public Iterator<Divisao> getAdjacentes(Divisao divisao) {
+        return mapa.getAdjacentes(divisao);
     }
 }

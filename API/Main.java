@@ -17,6 +17,8 @@ public class Main {
         Missao missao = escolherMissao();
         Edificio edificio = escolherMapa(missao);
         Divisao divisaoAtual = escolherEntrada(edificio);
+
+        jogo.iniciarTurnos(edificio, divisaoAtual, scanner);
     }
 
     private Missao escolherMissao() {
@@ -40,7 +42,9 @@ public class Main {
                 }
                 op = scanner.nextInt();
             } while (op <= 0 || op > missao.getNumMapas());
+
             // TODO show map
+            
             System.out.println("Confirmar escolha? (y/n)");
             String temp = scanner.nextLine();
             if (temp.equals("y") || temp.equals("Y"))

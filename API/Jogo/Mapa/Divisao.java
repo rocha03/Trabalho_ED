@@ -44,7 +44,7 @@ public class Divisao {
         try {
             return itens.pop();
         } catch (EmptyCollectionException e) {
-            return null; // este pode ficar assim
+            return null;
         }
     }
 
