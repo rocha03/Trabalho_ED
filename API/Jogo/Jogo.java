@@ -66,8 +66,32 @@ public class Jogo {
     }
 
     private boolean turnoToCruzManual(Scanner scanner) {
+
+        boolean jogadorEmCombate = toCruz.estaEmCombate();
+        int op = 0;
+        do {
+            System.out.println(jogadorEmCombate ? "Escolher ação (Combate):" : "Escolher ação:");
+            System.out.println(" 1. " + (jogadorEmCombate ? "Atacar" : "Mover"));
+            System.out.println(" 2. Usar Kit.");
+            op = scanner.nextInt();
+        } while (op <= 0 || op > 3);
+        switch (op) {
+            case 1:
+                if (jogadorEmCombate) {
+                    toCruz.atacar();
+                } else {
+                    // Logica de mover
+                    System.err.println("Mover...");
+                }
+                break;
+            case 2:
+                System.out.println(toCruz.usarMedKit());
+                break;
+        }
+        /*
         if (toCruz.estaEmCombate()) {
-            int op = 0;
+            //int op = 0;
+            
             do {
                 System.out.println("Escolher ação:");
                 System.out.println(" 1. Atacar;");
@@ -99,6 +123,7 @@ public class Jogo {
                     break;
             }
         }
+        */
         if (!toCruz.estaEmCombate()) {
             // apanhar itens
             // interagir com o alvo
