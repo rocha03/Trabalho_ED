@@ -26,6 +26,7 @@ public class Jogo {
     }
 
     public void adicionarNovaMissao(Missao missao) {
+        // TODO Verificar redundância
         missoes.addToRear(missao);
     }
 

@@ -2,13 +2,7 @@ package API.Jogo;
 
 import java.util.Iterator;
 
-import API.Exceptions.NotImportedException;
 import API.Jogo.Mapa.Edificio;
-import API.Jogo.Personagem.Inimigo;
-import API.Jogo.Personagem.ToCruz;
-import Exceptions.EmptyCollectionException;
-import Interfaces.QueueADT;
-import Interfaces.List.ListADT;
 import Interfaces.List.UnorderedListADT;
 
 public class Missao {
@@ -38,7 +32,7 @@ public class Missao {
         return iterator.next();
     }
 
-    private void turnoInimigos() {
+    /* private void turnoInimigos() {
         try {
             int tamanho = inimigos.size();
             for (int i = 0; i < tamanho; i++) {
@@ -66,5 +60,5 @@ public class Missao {
             inimigo.entrarOuSairCombate(true);
         } else
             inimigo.entrarOuSairCombate(false);
-    }
+    } */
 }

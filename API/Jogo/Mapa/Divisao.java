@@ -40,18 +40,12 @@ public class Divisao {
         }
     }
 
-    public void removerInimigosMortos() throws EmptyCollectionException {
+    public void removerInimigosMortos() {
         Iterator<Inimigo> it = inimigos.iterator(); // Iterador da lista de inimigos
 
         while (it.hasNext()) {
-            Inimigo inimigo = it.next();
-            if (inimigo.estaMorto()) {
-                try {
-                    inimigos.remove(inimigo); // Remove o inimigo morto
-                } catch (ElementNotFoundException e) {
-                    System.out.println(e);
-                }
-            }
+            if (it.next().estaMorto())
+                it.remove(); // Remove o inimigo morto
         }
     }
 

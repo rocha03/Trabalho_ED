@@ -32,12 +32,7 @@ public abstract class Combatente {
         return emCombate;
     }
 
-    public void setEmCombate(boolean emCombate){
-        this.emCombate = emCombate;
-    }
-
     public void entrarOuSairCombate(boolean combate) {
-        setEmCombate(combate);
-        //emCombate = combate;
+        emCombate = combate;
     }
 }

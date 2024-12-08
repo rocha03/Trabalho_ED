@@ -102,10 +102,6 @@ public class ToCruz extends Combatente {
             entrarOuSairCombate(false);
             System.err.println("Inimigos derrotados!");
         }
-        // TODO remover inimigos mortos
-        
+        divisao.removerInimigosMortos();
     }
-
-
-
 }
