@@ -36,11 +36,13 @@ public class Divisao {
     }
 
     public void removerInimigosMortos() {
-        Iterator<Inimigo> it = inimigos.iterator(); // Iterador da lista de inimigos
+        // Iterador da lista de inimigos
+        Iterator<Inimigo> it = inimigos.iterator();
 
         while (it.hasNext()) {
             if (it.next().estaMorto())
-                it.remove(); // Remove o inimigo morto
+                // Remove o inimigo morto
+                it.remove();
         }
     }
 
@@ -65,6 +67,5 @@ public class Divisao {
         } else if (!nome.equals(other.nome))
             return false;
         return true;
-
     }
 }

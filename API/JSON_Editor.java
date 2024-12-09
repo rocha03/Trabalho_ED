@@ -186,4 +186,10 @@ public class JSON_Editor {
         }
         return itens;
     }
+
+    public static void main(String[] args) {
+        JSON_Editor json_Editor = JSON_Editor.getInstance();
+
+        Missao missao = json_Editor.JSON_Read("D:/alexv/PROJETOS/ED_Java/Trabalho/Resource/test.json");
+    }
 }
