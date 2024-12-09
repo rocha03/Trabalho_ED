@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import API.Jogo.Itens.Item;
 import API.Jogo.Personagem.Inimigo;
-import Exceptions.ElementNotFoundException;
 import Exceptions.EmptyCollectionException;
 import Interfaces.StackADT;
 import Interfaces.List.UnorderedListADT;
@@ -32,12 +31,8 @@ public class Divisao {
         return inimigos.size();
     }
 
-    public Inimigo removerInimigo(Inimigo inimigo) {
-        try {
-            return inimigos.remove(inimigo);
-        } catch (EmptyCollectionException | ElementNotFoundException e) {
-            return null;
-        }
+    public void adicionarInimigo(Inimigo inimigo) {
+        inimigos.addToRear(inimigo);
     }
 
     public void removerInimigosMortos() {

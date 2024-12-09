@@ -1,10 +1,12 @@
 package API.Jogo;
 
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Scanner;
 
 import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
+import API.Jogo.Personagem.Inimigo;
 import API.Jogo.Personagem.ToCruz;
 import DataStructs.List.UnorderedList.LinkedUnorderedList;
 import Interfaces.List.UnorderedListADT;
@@ -150,7 +152,45 @@ public class Jogo {
     }
 
     public void turnoInimigos(Edificio edificio) {
+        // MOVER
+        Random random = new Random();
+
         Iterator<Divisao> divisoes = edificio.getMapa().iteratorDFS(toCruz.getDivisao());
         divisoes.next();
+        Divisao divisao;
+        while (divisoes.hasNext()) {
+            divisao = divisoes.next();
+            Iterator<Inimigo> inimigos = divisao.getInimigos();
+            Inimigo inimigo;
+            while (inimigos.hasNext()) {
+                inimigo = inimigos.next();
+                if (!inimigo.isMoved()) {
+                    // Identificar nova divisao
+                    int numMov = random.nextInt(2) + 1;
+                    Divisao destino = divisao;
+                    for (int i = 0; i < numMov; i++) {
+                        int num = 0, j = 0;
+                        Iterator<Divisao> adjacentes = edificio.getAdjacentes(destino);
+                        while (adjacentes.hasNext()) {
+                            adjacentes.next();
+                            num++;
+                        }
+                        int select = random.nextInt(num) + 1;
+                        adjacentes = edificio.getAdjacentes(destino);
+                        while (adjacentes.hasNext() && j < select) { // < ou <=
+                            destino = adjacentes.next();
+                            j++;
+                        }
+                    }
+
+                    // Ato de mover
+                    inimigo.setMoved(true);
+                    inimigos.remove();
+                    destino.adicionarInimigo(inimigo);
+                }
+            }
+        }
+
+        // ATACAR
     }
 }
