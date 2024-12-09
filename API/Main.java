@@ -7,6 +7,8 @@ import API.Jogo.Missao;
 import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
 
+import API.Jogo.JogoGrafico.JanelaSimples;
+
 public class Main {
 
     private final Jogo jogo = Jogo.getInstance();
@@ -45,9 +47,12 @@ public class Main {
 
             // TODO show map
             
+            new JanelaSimples("Visualizar Mapa", "Detalhes do mapa escolhido: ");
+
+
             System.out.println("Confirmar escolha? (y/n)");
             String temp = scanner.nextLine();
-            if (temp.equals("y") || temp.equals("Y"))
+            if (temp.toLowerCase().equals("y")) // altera para lowercase e verifica se é a opção correta
                 confirmar = true;
         } while (!confirmar);
         return missao.getEdificio(op);
@@ -67,6 +72,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-
+        Main main = new Main();
+        main.iniciarJogo();
     }
 }

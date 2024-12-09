@@ -99,13 +99,13 @@ public class Jogo {
                     } else {
                         int option = 0, i = 0, j = 1;
                         do {
+                            // Exibe divisões adjacentes e espera a escolha do jogador
                             System.out.println("Divisão atual: " + toCruz.getDivisao());
                             System.out.println("Divisões adjacentes disponíveis:");
                             Iterator<Divisao> iterator = edificio.getAdjacentes(toCruz.getDivisao());
                             i = 0;
                             while (iterator.hasNext()) {
-                                System.out.println(" 1. " + iterator.next());
-                                i++;
+                                System.out.println(" " + (++i) + ". " + iterator.next());
                             }
                             option = scanner.nextInt();
                         } while (option <= 0 || option > i);
