@@ -16,7 +16,7 @@ public abstract class Combatente {
         return vida;
     }
 
-    public void darDano(Combatente personagem) {
+    protected void darDano(Combatente personagem) {
         int vidatemp = personagem.receberDano(this.poder);
         if (vidatemp <= 0)
             personagem.morto = true;

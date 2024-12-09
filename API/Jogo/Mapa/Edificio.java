@@ -10,10 +10,11 @@ public class Edificio {
     private ListADT<Divisao> entradas;
     private Alvo alvo;
 
-    public Edificio(Mapa<Divisao> mapa, Alvo alvo, ListADT<Divisao> entradas) {
+    public Edificio(int versao, Mapa<Divisao> mapa, ListADT<Divisao> entradas, Alvo alvo) {
+        this.versao = versao;
         this.mapa = mapa;
-        this.alvo = alvo;
         this.entradas = entradas;
+        this.alvo = alvo;
     }
 
     public Mapa<Divisao> getMapa() {
