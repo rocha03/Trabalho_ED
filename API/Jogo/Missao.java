@@ -32,33 +32,28 @@ public class Missao {
         return iterator.next();
     }
 
-    /* private void turnoInimigos() {
-        try {
-            int tamanho = inimigos.size();
-            for (int i = 0; i < tamanho; i++) {
-                Inimigo inimigo = inimigos.dequeue();
-
-                if (inimigo.estaEmCombate()) {
-                    atacarToCruz(inimigo);
-                } else {
-                    inimigo.mover(edificio);
-
-                    atacarToCruz(inimigo);
-
-                    // Recolocar inimigo na fila
-                    inimigos.enqueue(inimigo);
-                }
-            }
-        } catch (EmptyCollectionException e) {
-            e.printStackTrace();
-        }
+    public Iterator<Edificio> getEdificios() {
+        return edificios.iterator();
     }
 
-    private void atacarToCruz(Inimigo inimigo) {
-        if (inimigo.getDivisao().equals(toCruz.getDivisao())) {
-            inimigo.darDano(toCruz);
-            inimigo.entrarOuSairCombate(true);
-        } else
-            inimigo.entrarOuSairCombate(false);
-    } */
+    public void adicionarEdificio(Edificio edificio) {
+        edificios.addToRear(edificio);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Missao other = (Missao) obj;
+        if (cod_missao == null) {
+            if (other.cod_missao != null)
+                return false;
+        } else if (!cod_missao.equals(other.cod_missao))
+            return false;
+        return true;
+    }
 }

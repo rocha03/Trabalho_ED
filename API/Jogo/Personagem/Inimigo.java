@@ -28,4 +28,8 @@ public class Inimigo extends Combatente {
     protected int receberDano(int dano) {
         return vida -= dano;
     }
+
+    public void atacar(ToCruz toCruz) {
+        darDano(toCruz);
+    }
 }

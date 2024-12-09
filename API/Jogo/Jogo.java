@@ -15,7 +15,6 @@ public class Jogo {
     private static Jogo instance;
     private UnorderedListADT<Missao> missoes;
     private ToCruz toCruz;
-    private boolean missaoConcluida;
 
     private Jogo() {
         missoes = new LinkedUnorderedList<>();
@@ -28,7 +27,15 @@ public class Jogo {
     }
 
     public void adicionarNovaMissao(Missao missao) {
-        // TODO Verificar redundância
+        if (missoes.contains(missao)) {
+            Iterator<Missao> missoesIterator = missoes.iterator();
+            Missao targetMissao = null;
+            while (missoesIterator.hasNext() && !targetMissao.equals(missao))
+                targetMissao = missoesIterator.next();
+            Iterator<Edificio> iterator = missao.getEdificios();
+            while (iterator.hasNext())
+                targetMissao.adicionarEdificio(iterator.next());
+        }
         missoes.addToRear(missao);
     }
 
@@ -59,7 +66,7 @@ public class Jogo {
     public void iniciarTurnos(Edificio edificio, Divisao entrada, Scanner scanner) {
         boolean jogoAtivo = true;
         boolean instakill = false;
-        boolean alvoConcluido = false;
+        boolean missaoConcluida = false;
         toCruz.setDivisao(entrada);
 
         while (jogoAtivo) {
@@ -67,10 +74,13 @@ public class Jogo {
             instakill = turnoToCruzManual(edificio, scanner);
             // Interagir com o Alvo
             if (!toCruz.estaEmCombate() && edificio.getAlvo().getDivisao().equals(toCruz.getDivisao()))
-                alvoConcluido = true;
-            if (!instakill) {
-                // turno inimigos
-            }
+                missaoConcluida = true;
+            // Turno Inimigos
+            if (!instakill)
+                turnoInimigos(edificio);
+            // Condição de paragem do jogo
+            if ((missaoConcluida && edificio.estaNaEntrada(toCruz.getDivisao())) || toCruz.estaMorto())
+                jogoAtivo = false;
         }
 
         // Mensagem final
@@ -155,7 +165,7 @@ public class Jogo {
         // MOVER
         Random random = new Random();
 
-        Iterator<Divisao> divisoes = edificio.getMapa().iteratorDFS(toCruz.getDivisao());
+        Iterator<Divisao> divisoes = edificio.getMapa().iteratorBFS(toCruz.getDivisao());
         divisoes.next();
         Divisao divisao;
         while (divisoes.hasNext()) {
@@ -190,7 +200,20 @@ public class Jogo {
                 }
             }
         }
+        // Limpar registos de movimento
+        divisoes = edificio.getMapa().iteratorBFS(toCruz.getDivisao());
+        divisoes.next();
+        while (divisoes.hasNext()) {
+            divisao = divisoes.next();
+            Iterator<Inimigo> inimigos = divisao.getInimigos();
+            while (inimigos.hasNext())
+                inimigos.next().setMoved(false);
+        }
 
         // ATACAR
+        divisao = toCruz.getDivisao();
+        Iterator<Inimigo> inimigos = divisao.getInimigos();
+        while (inimigos.hasNext())
+            inimigos.next().atacar(toCruz);
     }
 }

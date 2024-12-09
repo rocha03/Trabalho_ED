@@ -9,7 +9,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import API.Enums.TipoItens;
-import API.Jogo.Jogo;
 import API.Jogo.Missao;
 import API.Jogo.Itens.Item;
 import API.Jogo.Mapa.Alvo;
@@ -17,19 +16,16 @@ import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
 import API.Jogo.Mapa.Mapa;
 import API.Jogo.Personagem.Inimigo;
-import DataStructs.Graph.ArrayGraph;
 import DataStructs.List.UnorderedList.LinkedUnorderedList;
-import DataStructs.Queue.LinkedQueue;
+import DataStructs.Stack.LinkedStack;
 import Exceptions.ElementNotFoundException;
 import Exceptions.EmptyCollectionException;
-import Interfaces.QueueADT;
-import Interfaces.Graph.GraphADT;
+import Interfaces.StackADT;
 import Interfaces.List.ListADT;
 import Interfaces.List.UnorderedListADT;
 
 public class JSON_Editor {
     private static JSON_Editor instance;
-    private static final Jogo jogo = Jogo.getInstance();
 
     private JSON_Editor() {
     }
@@ -55,16 +51,16 @@ public class JSON_Editor {
             processarVertices(jsonObject, mapa);
             processarArestas(jsonObject, mapa);
 
-            // Processar Itens
-            processarItens(jsonObject, missao);
-
             // Reconhencer o alvo
             Alvo alvo = processarAlvo(jsonObject, mapa);
 
-            //
-
             // Edificio como um todo
-            Edificio edificio = new Edificio(mapa, alvo, processarEntradas(jsonObject));
+            Edificio edificio = new Edificio(versao, mapa, processarEntradas(jsonObject), alvo);
+
+            UnorderedListADT<Edificio> edificios = new LinkedUnorderedList<>();
+            edificios.addToRear(edificio);
+
+            return new Missao(codigo, edificios);
 
         } catch (IOException | ParseException e) {
             System.err.println("Erro ao ler o arquivo JSON: " + e.getMessage());
@@ -98,7 +94,7 @@ public class JSON_Editor {
             throw new IllegalArgumentException("Campo 'edificio' ausente ou inválido.");
 
         for (Object item : divisoesArray)
-            mapa.addVertex(new Divisao((String) item, processarInimigos(jsonObject, (String) item), null));
+            mapa.addVertex(new Divisao((String) item, processarInimigos(jsonObject, (String) item), processarItens(jsonObject, (String) item)));
     }
 
     private void processarArestas(JSONObject jsonObject, Mapa<Divisao> mapa) {
@@ -117,7 +113,6 @@ public class JSON_Editor {
                 }
             }
         } catch (ElementNotFoundException | EmptyCollectionException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -149,7 +144,6 @@ public class JSON_Editor {
             Divisao alvo = new Divisao((String) alvoObj.get("divisao"), null, null);
             return new Alvo(mapa.getVertex(alvo), (String) alvoObj.get("tipo"));
         } catch (ElementNotFoundException | EmptyCollectionException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
@@ -167,27 +161,29 @@ public class JSON_Editor {
         return (ListADT<Divisao>) entradas;
     }
 
-    private void processarItens(JSONObject jsonObject, Missao missao) {
+    private StackADT<Item> processarItens(JSONObject jsonObject, String divisao) {
         JSONArray itensArray = (JSONArray) jsonObject.get("itens");
         if (itensArray == null)
             throw new IllegalArgumentException("Campo 'itens' ausente ou inválido.");
 
-        UnorderedListADT<Item> itens = new LinkedUnorderedList<Item>();
+            StackADT<Item> itens = new LinkedStack<Item>();
         for (Object obj : itensArray) {
             JSONObject itemObject = (JSONObject) obj;
-            String divisao = (String) itemObject.get("divisao");
+            String destino = (String) itemObject.get("divisao");
             int pontos = ((Long) itemObject.get("pontos-recuperados")).intValue();
             String tipo = (String) itemObject.get("tipo");
 
-            switch (tipo) {
-                case "kit de vida":
-                    itens.addToRear(new Item(divisao, pontos, TipoItens.KIT_DE_VIDA));
-                    break;
-                case "colete":
-                    itens.addToRear(new Item(divisao, pontos, TipoItens.COLETE));
-                    break;
-            }
+            if (divisao.equals(destino))
+                switch (tipo) {
+                    case "kit de vida":
+                        itens.push(new Item(pontos, TipoItens.KIT_DE_VIDA));
+                        break;
+                    case "colete":
+                        itens.push(new Item(pontos, TipoItens.COLETE));
+                        break;
+                }
+
         }
-        missao.setItens(new Itens((ListADT<Item>) itens));
+        return itens;
     }
 }
