@@ -8,17 +8,20 @@ import API.Jogo.Missao;
 import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
 
-import API.Jogo.JogoGrafico.JanelaSimples;
-
 public class Main {
 
     private final Jogo jogo = Jogo.getInstance();
     private static final JSON_Editor json_Editor = JSON_Editor.getInstance();
     private static Scanner scanner = new Scanner(System.in);
 
+    public Main() {
+    }
+
     public void iniciarJogo() {
         Missao missao = escolherMissao();
         Edificio edificio = escolherMapa(missao);
+
+        // Manual
         Divisao divisaoAtual = escolherEntrada(edificio);
 
         jogo.iniciarTurnos(edificio, divisaoAtual, scanner);
@@ -69,7 +72,7 @@ public class Main {
             } while (op <= 0 || op > missao.getNumMapas());
 
             // TODO show map
-            new JanelaSimples("Visualizar Mapa", null, null); // por implementar
+            //new JanelaSimples("Visualizar Mapa", null, null); // por implementar
 
             System.out.println("Confirmar escolha? (y/n)");
             String temp = scanner.nextLine();

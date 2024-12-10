@@ -12,11 +12,13 @@ public class Divisao {
     private String nome;
     private StackADT<Item> itens;
     private UnorderedListADT<Inimigo> inimigos;
+    private boolean entrada;
 
     public Divisao(String nome, UnorderedListADT<Inimigo> inimigos, StackADT<Item> itens) {
         this.nome = nome;
         this.inimigos = inimigos;
         this.itens = itens;
+        this.entrada = false;
     }
 
     public String getNome() {
@@ -29,6 +31,14 @@ public class Divisao {
 
     public int getNumInimigos() {
         return inimigos.size();
+    }
+
+    public boolean isEntrada() {
+        return entrada;
+    }
+
+    public void setEntrada(boolean entrada) {
+        this.entrada = entrada;
     }
 
     public void adicionarInimigo(Inimigo inimigo) {
@@ -54,13 +64,25 @@ public class Divisao {
         }
     }
 
+    public int getSpecialCount() {
+        int count = 0;
+        Iterator<Inimigo> iter = inimigos.iterator();
+        while (iter.hasNext()) {
+            iter.next();
+            count++;
+        }
+        return count;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
 
         Divisao other = (Divisao) obj;
-        
+
         if (nome == null) {
             if (other.nome != null)
                 return false;

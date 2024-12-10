@@ -113,6 +113,14 @@ public class ToCruz extends Combatente {
         }
     }
 
+    public boolean autoUsarKit() {
+        if (vida < 15) {
+            usarMedKit();
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Aplica o efeito de um kit de vida, aumentando a vida.
      *
