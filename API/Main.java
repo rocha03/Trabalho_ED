@@ -1,5 +1,6 @@
 package API;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import API.Jogo.Jogo;
@@ -25,10 +26,32 @@ public class Main {
 
     private Missao escolherMissao() {
         int op = 0;
+        boolean entradaValida = false;
+
+        // Obter as missões disponíveis apenas uma vez
+        String missoesDisponiveis = jogo.verMissoesDisponiveis();
+        int numMissoes = jogo.getNumMissoes();
+
         do {
-            System.out.println(jogo.verMissoesDisponiveis());
-            op = scanner.nextInt();
-        } while (op <= 0 || op > jogo.getNumMissoes());
+            System.out.println("Escolha uma das missões disponíveis:");
+            System.out.println(missoesDisponiveis);
+
+            try {
+                System.out.print("Digite o número da missão desejada: ");
+                op = scanner.nextInt();
+
+                // Validar se está dentro do intervalo permitido
+                if (op <= 0 && op > numMissoes) {
+                    entradaValida = true;
+                } else {
+                    System.out.println("Opção inválida! Escolha um número entre 1 e " + numMissoes + ".");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite apenas números.");
+                scanner.nextLine(); // Consumir a entrada inválida do buffer
+            }
+        } while (!entradaValida);
+
         return jogo.getMissao(op);
     }
 
@@ -46,9 +69,7 @@ public class Main {
             } while (op <= 0 || op > missao.getNumMapas());
 
             // TODO show map
-            
-            new JanelaSimples("Visualizar Mapa", "Detalhes do mapa escolhido: ");
-
+            new JanelaSimples("Visualizar Mapa", null, null); // por implementar
 
             System.out.println("Confirmar escolha? (y/n)");
             String temp = scanner.nextLine();
@@ -73,6 +94,9 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
-        main.iniciarJogo();
+
+        // Tests
+        Missao missao = new Missao("patade coelho", null);
+        main.escolherMapa(missao);
     }
 }
