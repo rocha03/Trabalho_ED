@@ -8,7 +8,7 @@ import API.Jogo.Missao;
 import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
 
-import API.Jogo.JogoGrafico.JanelaSimples;
+import API.Jogo.JogoGrafico.ShowASCII;
 
 public class Main {
 
@@ -69,7 +69,7 @@ public class Main {
             } while (op <= 0 || op > missao.getNumMapas());
 
             // TODO show map
-            new JanelaSimples("Visualizar Mapa", null, null); // por implementar
+            new ShowASCII(); // por implementar
 
             System.out.println("Confirmar escolha? (y/n)");
             String temp = scanner.nextLine();
