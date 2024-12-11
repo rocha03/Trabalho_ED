@@ -16,9 +16,14 @@ public class Main {
     private static final JSON_Editor json_Editor = JSON_Editor.getInstance();
     private static Scanner scanner = new Scanner(System.in);
 
+    public Main() {
+    }
+
     public void iniciarJogo() {
         Missao missao = escolherMissao();
         Edificio edificio = escolherMapa(missao);
+
+        // Manual
         Divisao divisaoAtual = escolherEntrada(edificio);
 
         jogo.iniciarTurnos(edificio, divisaoAtual, scanner);

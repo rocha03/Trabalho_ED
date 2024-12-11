@@ -71,7 +71,7 @@ public class Jogo {
 
         while (jogoAtivo) {
             // Turno To Cruz
-            instakill = turnoToCruzManual(edificio, scanner);
+            instakill = turnoToCruz(edificio, scanner);
             // Interagir com o Alvo
             if (!toCruz.estaEmCombate() && edificio.getAlvo().getDivisao().equals(toCruz.getDivisao()))
                 missaoConcluida = true;
@@ -79,20 +79,64 @@ public class Jogo {
             if (!instakill)
                 turnoInimigos(edificio);
             // Condição de paragem do jogo
-            if ((missaoConcluida && edificio.estaNaEntrada(toCruz.getDivisao())) || toCruz.estaMorto())
+            if ((toCruz.getDivisao().isEntrada() ? escolherSair(scanner) : false) || toCruz.estaMorto())
                 jogoAtivo = false;
         }
 
         // Mensagem final
         if (toCruz.estaMorto()) {
             System.out.println("Tó Cruz foi derrotado...");
+        } else if (!missaoConcluida) {
+            System.out.println("O Tó Cruz falhou a missão...");
         } else {
             System.out.println("Missão Concluída com Sucesso!");
         }
     }
 
-    private boolean turnoToCruzManual(Edificio edificio, Scanner scanner) {
+    public void iniciarTurnos(Edificio edificio) {
+        boolean jogoAtivo = true;
+        boolean instakill = false;
+        boolean missaoConcluida = false;
 
+        // Escolher caminho
+        Iterator<Divisao> caminho = edificio.getAutoPath(false);
+        toCruz.setDivisao(caminho.next());
+
+        while (jogoAtivo) {
+            // Turno To Cruz
+            instakill = turnoToCruz(edificio, caminho);
+            // Interagir com o Alvo
+            if (!toCruz.estaEmCombate() && edificio.getAlvo().getDivisao().equals(toCruz.getDivisao())) {
+                missaoConcluida = true;
+                caminho = edificio.getAutoPath(true);
+            }
+            // Turno Inimigos
+            if (!instakill)
+                turnoInimigos(edificio); // TODO
+            // Condição de paragem do jogo
+            if (toCruz.getDivisao().isEntrada() || toCruz.estaMorto())
+                jogoAtivo = false;
+        }
+
+        // Mensagem final
+        if (toCruz.estaMorto()) {
+            System.out.println("Tó Cruz foi derrotado...");
+        } else if (!missaoConcluida) {
+            System.out.println("O Tó Cruz falhou a missão...");
+        } else {
+            System.out.println("Missão Concluída com Sucesso!");
+        }
+    }
+
+    public boolean escolherSair(Scanner scanner) {
+        System.out.println("Está numa saida, quer sair da Missão? (y/n)\n  ~");
+        String choice = scanner.nextLine();
+        if (choice.toLowerCase().equals("y"))
+            return true;
+        return false;
+    }
+
+    private boolean turnoToCruz(Edificio edificio, Scanner scanner) {
         boolean jogadorEmCombate = toCruz.estaEmCombate();
         boolean itemUsado = true, instakill = false;
         int op = 0;
@@ -156,9 +200,26 @@ public class Jogo {
         return instakill;
     }
 
-    public boolean turnoToCruzAutomatico(Edificio edificio) {
-        // TODO
-        return false;
+    public boolean turnoToCruz(Edificio edificio, Iterator<Divisao> caminho) {
+        boolean jogadorEmCombate = toCruz.estaEmCombate();
+        boolean instakill = false;
+
+        if (jogadorEmCombate) {
+            if (!toCruz.autoUsarKit())
+                toCruz.atacar();
+        } else {
+            toCruz.setDivisao(caminho.next());
+
+            if (toCruz.getDivisao().getNumInimigos() > 0) {
+                toCruz.atacar();
+                if (toCruz.getDivisao().getNumInimigos() > 0)
+                    toCruz.entrarOuSairCombate(true);
+                else
+                    instakill = true;
+            }
+            toCruz.atacar();
+        }
+        return instakill;
     }
 
     public void turnoInimigos(Edificio edificio) {

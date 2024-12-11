@@ -1,8 +1,11 @@
 package API.Jogo.Mapa;
 
 import java.util.Iterator;
+import java.util.function.Function;
 
+import DataStructs.List.UnorderedList.LinkedUnorderedList;
 import Interfaces.List.ListADT;
+import Interfaces.List.UnorderedListADT;
 
 /**
  * Representa um Edifício no jogo, contendo divisões organizadas em um mapa,
@@ -20,11 +23,6 @@ public class Edificio {
     private Mapa<Divisao> mapa;
 
     /**
-     * A lista de divisões que são entradas para o edifício.
-     */
-    private ListADT<Divisao> entradas;
-
-    /**
      * O alvo associado ao edifício.
      */
     private Alvo alvo;
@@ -37,10 +35,9 @@ public class Edificio {
      * @param entradas a lista de entradas do edifício
      * @param alvo     o alvo associado ao edifício
      */
-    public Edificio(int versao, Mapa<Divisao> mapa, ListADT<Divisao> entradas, Alvo alvo) {
+    public Edificio(int versao, Mapa<Divisao> mapa, Alvo alvo) {
         this.versao = versao;
         this.mapa = mapa;
-        this.entradas = entradas;
         this.alvo = alvo;
     }
 
@@ -77,7 +74,13 @@ public class Edificio {
      * @return o número de entradas
      */
     public int getNumEntradas() {
-        return entradas.size();
+        Iterator<Divisao> iterator = mapa.getVertices();
+
+        int i = 0;
+        while (iterator.hasNext())
+            if (iterator.next().isEntrada())
+                i++;
+        return i;
     }
 
     /**
@@ -86,11 +89,15 @@ public class Edificio {
      * @return uma string com as entradas numeradas
      */
     public String verEntradas() {
-        Iterator<Divisao> iterator = entradas.iterator();
+        Iterator<Divisao> iterator = mapa.getVertices();
 
         String escolhas = "Escolha uma entrada:\n";
-        for (int i = 0; i < entradas.size(); i++) {
-            escolhas += " " + (i + 1) + ". " + iterator.next().getNome() + "\n";
+        int i = 1;
+        Divisao divisao;
+        while (iterator.hasNext()) {
+            divisao = iterator.next();
+            if (divisao.isEntrada())
+                escolhas += " " + i++ + ". " + divisao.getNome() + "\n";
         }
         return escolhas;
     }
@@ -102,24 +109,15 @@ public class Edificio {
      * @return a divisão correspondente à entrada
      */
     public Divisao getEntrada(int num) {
-        Iterator<Divisao> iterator = entradas.iterator();
+        Iterator<Divisao> iterator = mapa.getVertices();
         int i = 0;
-        while (i < num - 1) {
-            iterator.next();
-            i++;
+        Divisao divisao = null;
+        while (i < num && iterator.hasNext()) {
+            divisao = iterator.next();
+            if (divisao.isEntrada())
+                i++;
         }
-        return iterator.next();
-    }
-
-    /**
-     * Verifica se uma posição atual é uma das entradas do edifício.
-     *
-     * @param posicaoAtual a divisão a ser verificada
-     * @return {@code true} se a posição está nas entradas, caso contrário
-     *         {@code false}
-     */
-    public boolean estaNaEntrada(Divisao posicaoAtual) {
-        return entradas.contains(posicaoAtual);
+        return divisao;
     }
 
     /**
@@ -130,5 +128,21 @@ public class Edificio {
      */
     public Iterator<Divisao> getAdjacentes(Divisao divisao) {
         return mapa.getAdjacentes(divisao);
+    }
+
+    public Iterator<Divisao> getAutoPath(boolean isReverse) {
+        Iterator<Divisao> iterator = mapa.getVertices();
+
+        UnorderedListADT<Divisao> list = new LinkedUnorderedList<>();
+        while (iterator.hasNext()) {
+            Divisao divisao = iterator.next();
+            if (divisao.isEntrada())
+                list.addToRear(divisao);
+        }
+        // Creating the Function<Divisao, Integer> to calculate the special count
+        Function<Divisao, Integer> specialCountFunction = divisao -> {
+            return divisao.getSpecialCount();
+        };
+        return mapa.findOptimalPath(list, alvo.getDivisao(), specialCountFunction, isReverse);
     }
 }
