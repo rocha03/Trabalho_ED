@@ -122,11 +122,11 @@ public class Edificio {
     public Iterator<Divisao> getAutoPath(boolean isReverse) {
         Iterator<Divisao> iterator = mapa.getVertices();
 
-        UnorderedListADT<Divisao> list = new LinkedUnorderedList<>();
+        UnorderedListADT<Divisao> entradas = new LinkedUnorderedList<>();
         while (iterator.hasNext()) {
             Divisao divisao = iterator.next();
             if (divisao.isEntrada())
-                list.addToRear(divisao);
+                entradas.addToRear(divisao);
         }
 
         // Initialize variables to track the optimal path and its special vertex count
@@ -134,21 +134,19 @@ public class Edificio {
         UnorderedListADT<Divisao> optimalPath = new LinkedUnorderedList<>();
 
         // Use an iterator for list to iterate over starting vertices
-        Iterator<Divisao> listIterator = list.iterator();
+        Iterator<Divisao> listIterator = entradas.iterator();
 
         while (listIterator.hasNext()) {
-            Divisao list2Vertex = listIterator.next();
+            Divisao vertex = listIterator.next();
 
             // Decide direction of pathfinding based on the isReverse parameter
             Iterator<Divisao> pathIterator;
             if (isReverse) {
-                pathIterator = mapa.iteratorShortestPath(alvo.getDivisao(), list2Vertex); // Reverse direction
+                pathIterator = mapa.iteratorShortestPath(alvo.getDivisao(), vertex); // Reverse direction
             } else {
-                pathIterator = mapa.iteratorShortestPath(list2Vertex, alvo.getDivisao()); // Forward direction
+                pathIterator = mapa.iteratorShortestPath(vertex, alvo.getDivisao()); // Forward direction
             }
-
-            // pathIterator = (isReverse) ? mapa.iteratorShortestPath(alvo.getDivisao(), list2Vertex) : mapa.iteratorShortestPath(list2Vertex, alvo.getDivisao()) ;
-
+            
             // Track special vertices count for the current path
             int specialCount = 0;
             UnorderedListADT<Divisao> currentPath = new ArrayUnorderedList<>();

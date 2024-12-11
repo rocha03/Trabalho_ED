@@ -62,7 +62,7 @@ public class Mapa<T> extends ArrayGraph<T> {
 
     public Iterator<T> getVertices() {
         UnorderedListADT<T> list = new LinkedUnorderedList<>();
-        for (int i = 0; i < vertices.length; i++)
+        for (int i = 0; i < numVertices; i++)
             list.addToRear(vertices[i]);
         return list.iterator();
     }

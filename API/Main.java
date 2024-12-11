@@ -12,9 +12,9 @@ import API.Jogo.Personagem.Inimigo;
 
 public class Main {
 
-    private final Jogo jogo = Jogo.getInstance();
+    private static final Jogo jogo = Jogo.getInstance();
     private static final JSON_Editor json_Editor = JSON_Editor.getInstance();
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public Main() {
     }
@@ -64,16 +64,16 @@ public class Main {
                             int option = 0, i = 0;
                             do {
                                 // Exibe divisões adjacentes e espera a escolha do jogador
-                                System.out.println("Divisão atual: " + jogo.getDivisaoAtual());
+                                System.out.println("Divisão atual: " + jogo.getDivisaoAtual().getNome());
                                 System.out.println("Escolha a divisão para onde mover:");
                                 Iterator<Divisao> iterator = edificio.getAdjacentes(jogo.getDivisaoAtual());
                                 i = 0;
                                 while (iterator.hasNext()) {
-                                    System.out.println(" " + (++i) + ". " + iterator.next());
+                                    System.out.println(" " + (++i) + ". " + iterator.next().getNome());
                                 }
-                                System.out.println("\n");
                                 option = scanner.nextInt();
                             } while (option <= 0 || option > i);
+                            // Mostrar adj maybe? com o ver adj
                             instakill = jogo.moverToCruz(edificio, option);
                         }
                         break;
@@ -86,7 +86,8 @@ public class Main {
                 }
             } while (!itemUsado);
 
-            jogoAtivo = jogo.finalizarTurnos(edificio, instakill, escolherSair());
+            jogoAtivo = jogo.finalizarTurnos(edificio, instakill,
+                    jogo.getDivisaoAtual().isEntrada() ? escolherSair() : false);
         }
 
         // Mensagem final
@@ -190,14 +191,14 @@ public class Main {
         }
 
         do {
-            System.out.println(escolhas + "\n");
+            System.out.println(escolhas);
             op = scanner.nextInt();
         } while (op <= 0 || op > edificio.getNumEntradas());
         return edificio.getEntrada(op);
     }
 
-    public boolean escolherSair() {
-        System.out.println("Está numa saida, quer sair da Missão? (y/n)\n  ~");
+    private boolean escolherSair() {
+        System.out.println("Está numa saida, quer sair da Missão? (y/n)");
         String choice = scanner.nextLine();
         if (choice.toLowerCase().equals("y"))
             return true;
@@ -219,7 +220,7 @@ public class Main {
             asciiRepresentation += adjacentes(edificio, divisao);
         }
 
-        return asciiRepresentation.toString();
+        return asciiRepresentation;
     }
 
     private String verAdjacentes(Edificio edificio) {

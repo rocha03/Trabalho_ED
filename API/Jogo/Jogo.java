@@ -13,7 +13,7 @@ import Interfaces.List.UnorderedListADT;
 public class Jogo {
     private static Jogo instance;
     private UnorderedListADT<Missao> missoes;
-    private ToCruz toCruz;
+    private static final ToCruz toCruz = ToCruz.getInstance();
 
     private Jogo() {
         missoes = new LinkedUnorderedList<>();
@@ -135,6 +135,7 @@ public class Jogo {
             if (!toCruz.estaEmCombate() && edificio.getAlvo().getDivisao().equals(toCruz.getDivisao())) {
                 edificio.getAlvo().setInteragido(true);
                 caminho = edificio.getAutoPath(true);
+                caminho.next();
             }
             // Turno Inimigos
             if (!instakill)
