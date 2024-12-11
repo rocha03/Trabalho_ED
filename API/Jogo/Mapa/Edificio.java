@@ -157,6 +157,8 @@ public class Edificio {
                 pathIterator = mapa.iteratorShortestPath(list2Vertex, alvo.getDivisao()); // Forward direction
             }
 
+            // pathIterator = (isReverse) ? mapa.iteratorShortestPath(alvo.getDivisao(), list2Vertex) : mapa.iteratorShortestPath(list2Vertex, alvo.getDivisao()) ;
+
             // Track special vertices count for the current path
             int specialCount = 0;
             UnorderedListADT<Divisao> currentPath = new ArrayUnorderedList<>();

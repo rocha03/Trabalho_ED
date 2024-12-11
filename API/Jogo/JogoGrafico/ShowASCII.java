@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
-import DataStructs.List.ArrayList;
 
 public class ShowASCII {
 
@@ -15,21 +14,35 @@ public class ShowASCII {
         this.edificio = edificio;
     }
 
-    public String ShowEdificio() {
+    public String ShowEdificio(Divisao divisaoAtual) {
 
         String asciiRepresentation = "";
-        
-        Iterator<Divisao> it = edificio.getMapa().iteratorDFS(edificio.getMapa().getVertex("null"));
 
-        while (it.hasNext()) {
-            Divisao line = it.next();
-            asciiRepresentation += line.getNome() + "\n";
+        Iterator<Divisao> divisoes = edificio.getMapa().getVertices();
+
+        while (divisoes.hasNext()) {
+            Divisao divisao = divisoes.next();
+            asciiRepresentation += (divisaoAtual.equals(divisao)) ? "[" + divisao.getNome() + "]" : " " + divisao.getNome() + " ";
+
+            Iterator<Divisao> ligacoes = edificio.getAdjacentes(divisao);
+            while (ligacoes.hasNext())
+                asciiRepresentation += " <-> " + ligacoes.next().getNome();
+            asciiRepresentation += "\n";
         }
 
-        return asciiRepresentation;
-        
+        return asciiRepresentation.toString();
     }
 
-    public void ShowDivisao() {
+    public String ShowDivisao(Divisao divisaoAtual) {
+        String asciiRepresentation = "";
+
+        asciiRepresentation += "[" + divisaoAtual.getNome() + "]";
+
+        Iterator<Divisao> ligacoes = edificio.getAdjacentes(divisaoAtual);
+        while (ligacoes.hasNext())
+            asciiRepresentation += " <-> " + ligacoes.next().getNome();
+        asciiRepresentation += "\n";
+
+        return asciiRepresentation.toString();
     }
 }
