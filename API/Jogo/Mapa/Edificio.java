@@ -87,18 +87,8 @@ public class Edificio {
      *
      * @return uma string com as entradas numeradas
      */
-    public String verEntradas() {
-        Iterator<Divisao> iterator = mapa.getVertices();
-
-        String escolhas = "Escolha uma entrada:\n";
-        int i = 1;
-        Divisao divisao;
-        while (iterator.hasNext()) {
-            divisao = iterator.next();
-            if (divisao.isEntrada())
-                escolhas += " " + i++ + ". " + divisao.getNome() + "\n";
-        }
-        return escolhas;
+    public Iterator<Divisao> verEntradas() {
+        return mapa.getVertices();
     }
 
     /**

@@ -14,6 +14,8 @@ public class Alvo {
      */
     private String tipo;
 
+    private boolean interagido;
+
     /**
      * Construtor que inicializa um Alvo com uma divisão e um tipo.
      *
@@ -23,6 +25,15 @@ public class Alvo {
     public Alvo(Divisao divisao, String tipo) {
         this.divisao = divisao;
         this.tipo = tipo;
+        this.interagido = false;
+    }
+
+    public boolean foiInteragido() {
+        return interagido;
+    }
+
+    public void setInteragido(boolean interagido) {
+        this.interagido = interagido;
     }
 
     /**

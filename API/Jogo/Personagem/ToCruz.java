@@ -4,9 +4,12 @@ import java.util.Iterator;
 
 import API.Jogo.Itens.Item;
 import API.Jogo.Mapa.Divisao;
+import DataStructs.List.UnorderedList.LinkedUnorderedList;
 import DataStructs.Stack.LinkedStack;
 import Exceptions.EmptyCollectionException;
 import Interfaces.StackADT;
+import Interfaces.List.ListADT;
+import Interfaces.List.UnorderedListADT;
 
 /**
  * Representa o personagem principal, ToCruz, que é um combatente único no jogo.
@@ -170,18 +173,17 @@ public class ToCruz extends Combatente {
      * @return uma mensagem indicando o resultado do ataque: se todos os inimigos
      *         foram derrotados ou quantos ainda permanecem na sala.
      */
-    public String atacar() {
+    public Iterator<Inimigo> atacar() {
         Iterator<Inimigo> iterator = divisao.getInimigos();
+        UnorderedListADT<Inimigo> derrotados = new LinkedUnorderedList<>();
         Inimigo inimigo;
         while (iterator.hasNext()) {
             inimigo = iterator.next();
             darDano(inimigo);
+            if (inimigo.estaMorto()) 
+                derrotados.addToRear(inimigo);
         }
         divisao.removerInimigosMortos();
-        if (divisao.getNumInimigos() == 0) {
-            entrarOuSairCombate(false);
-            return "Inimigos derrotados!";
-        }
-        return "Número de inimigos restantes na sala: " + divisao.getNumInimigos();
+        return derrotados.iterator();
     }
 }

@@ -2,7 +2,6 @@ package API.Jogo;
 
 import java.util.Iterator;
 import java.util.Random;
-import java.util.Scanner;
 
 import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
@@ -39,14 +38,8 @@ public class Jogo {
         missoes.addToRear(missao);
     }
 
-    public String verMissoesDisponiveis() {
-        Iterator<Missao> iterator = missoes.iterator();
-
-        String escolhas = "Escolha uma missão:";
-        for (int i = 0; i < missoes.size(); i++) {
-            escolhas += " " + (i + 1) + ". " + iterator.next().getCod_missao();
-        }
-        return escolhas;
+    public Iterator<Missao> verMissoesDisponiveis() {
+        return missoes.iterator();
     }
 
     public int getNumMissoes() {
@@ -63,37 +56,71 @@ public class Jogo {
         return iterator.next();
     }
 
-    public void iniciarTurnos(Edificio edificio, Divisao entrada, Scanner scanner) {
-        boolean jogoAtivo = true;
-        boolean instakill = false;
-        boolean missaoConcluida = false;
-        toCruz.setDivisao(entrada);
-
-        while (jogoAtivo) {
-            // Turno To Cruz
-            instakill = turnoToCruz(edificio, scanner);
-            // Interagir com o Alvo
-            if (!toCruz.estaEmCombate() && edificio.getAlvo().getDivisao().equals(toCruz.getDivisao()))
-                missaoConcluida = true;
-            // Turno Inimigos
-            if (!instakill)
-                turnoInimigos(edificio);
-            // Condição de paragem do jogo
-            if ((toCruz.getDivisao().isEntrada() ? escolherSair(scanner) : false) || toCruz.estaMorto())
-                jogoAtivo = false;
-        }
-
-        // Mensagem final
-        if (toCruz.estaMorto()) {
-            System.out.println("Tó Cruz foi derrotado...");
-        } else if (!missaoConcluida) {
-            System.out.println("O Tó Cruz falhou a missão...");
-        } else {
-            System.out.println("Missão Concluída com Sucesso!");
-        }
+    public Divisao getDivisaoAtual() {
+        return toCruz.getDivisao();
     }
 
-    public void iniciarTurnos(Edificio edificio) {
+    public void entrarNoMapa(Divisao divisao) {
+        toCruz.setDivisao(divisao);
+    }
+
+    public boolean getStatusCombate() {
+        return toCruz.estaEmCombate();
+    }
+
+    public Iterator<Inimigo> atacarInimigos() {
+        return toCruz.atacar();
+    }
+
+    public boolean moverToCruz(Edificio edificio, int index) {
+        Iterator<Divisao> iterator = edificio.getAdjacentes(toCruz.getDivisao());
+        boolean instakill = false;
+        int i = 1;
+        while (iterator.hasNext() && i != index) {
+            iterator.next();
+            i++;
+        }
+        toCruz.setDivisao(iterator.next());
+
+        if (toCruz.getDivisao().getNumInimigos() > 0) {
+            toCruz.atacar();
+            if (toCruz.getDivisao().getNumInimigos() > 0)
+                toCruz.entrarOuSairCombate(true);
+            else
+                instakill = true;
+        }
+        return instakill;
+    }
+
+    public boolean curarToCruz() {
+        return toCruz.usarMedKit();
+    }
+
+    public boolean finalizarTurnos(Edificio edificio, boolean instakill, boolean sair) {
+        if (!toCruz.estaEmCombate())
+            toCruz.apanharItens();
+
+        // Interagir com o Alvo
+        if (!toCruz.estaEmCombate() && edificio.getAlvo().getDivisao().equals(toCruz.getDivisao()))
+            edificio.getAlvo().setInteragido(true);
+        // Turno Inimigos
+        if (!instakill)
+            turnoInimigos(edificio);
+        // Condição de paragem do jogo
+        if ((toCruz.getDivisao().isEntrada() ? sair : false) || toCruz.estaMorto())
+            return false;
+        return true;
+    }
+
+    public int gameStatus(Edificio edificio) {
+        if (toCruz.estaMorto())
+            return 3;
+        if (edificio.getAlvo().foiInteragido())
+            return 1;
+        return 2;
+    }
+
+    public void iniciarTurnosAuto(Edificio edificio) {
         boolean jogoAtivo = true;
         boolean instakill = false;
         boolean missaoConcluida = false;
@@ -107,97 +134,16 @@ public class Jogo {
             instakill = turnoToCruz(edificio, caminho);
             // Interagir com o Alvo
             if (!toCruz.estaEmCombate() && edificio.getAlvo().getDivisao().equals(toCruz.getDivisao())) {
-                missaoConcluida = true;
+                edificio.getAlvo().setInteragido(true);
                 caminho = edificio.getAutoPath(true);
             }
             // Turno Inimigos
             if (!instakill)
-                turnoInimigos(edificio); // TODO
+                atacarToCruz();
             // Condição de paragem do jogo
             if (toCruz.getDivisao().isEntrada() || toCruz.estaMorto())
                 jogoAtivo = false;
         }
-
-        // Mensagem final
-        if (toCruz.estaMorto()) {
-            System.out.println("Tó Cruz foi derrotado...");
-        } else if (!missaoConcluida) {
-            System.out.println("O Tó Cruz falhou a missão...");
-        } else {
-            System.out.println("Missão Concluída com Sucesso!");
-        }
-    }
-
-    public boolean escolherSair(Scanner scanner) {
-        System.out.println("Está numa saida, quer sair da Missão? (y/n)\n  ~");
-        String choice = scanner.nextLine();
-        if (choice.toLowerCase().equals("y"))
-            return true;
-        return false;
-    }
-
-    private boolean turnoToCruz(Edificio edificio, Scanner scanner) {
-        boolean jogadorEmCombate = toCruz.estaEmCombate();
-        boolean itemUsado = true, instakill = false;
-        int op = 0;
-
-        do {
-            do {
-                System.out.println(jogadorEmCombate ? "Escolher ação (Combate):" : "Escolher ação:");
-                System.out.println(" 1. " + (jogadorEmCombate ? "Atacar" : "Mover"));
-                System.out.println(" 2. Usar Kit.");
-                op = scanner.nextInt();
-            } while (op <= 0 || op > 3);
-            switch (op) {
-                case 1:
-                    if (jogadorEmCombate) {
-                        toCruz.atacar();
-                    } else {
-                        int option = 0, i = 0, j = 1;
-                        do {
-                            // Exibe divisões adjacentes e espera a escolha do jogador
-                            System.out.println("Divisão atual: " + toCruz.getDivisao());
-                            System.out.println("Divisões adjacentes disponíveis:");
-                            Iterator<Divisao> iterator = edificio.getAdjacentes(toCruz.getDivisao());
-                            i = 0;
-                            while (iterator.hasNext()) {
-                                System.out.println(" " + (++i) + ". " + iterator.next());
-                            }
-                            option = scanner.nextInt();
-                        } while (option <= 0 || option > i);
-                        Iterator<Divisao> iterator = edificio.getAdjacentes(toCruz.getDivisao());
-                        while (iterator.hasNext() && j != option) {
-                            iterator.next();
-                            j++;
-                        }
-                        toCruz.setDivisao(iterator.next());
-
-                        if (toCruz.getDivisao().getNumInimigos() > 0) {
-                            toCruz.atacar();
-                            if (toCruz.getDivisao().getNumInimigos() > 0)
-                                toCruz.entrarOuSairCombate(true);
-                            else
-                                instakill = true;
-                        }
-                        toCruz.atacar();
-                        System.err.println("Mover...");
-                    }
-                    break;
-                case 2:
-                    if (toCruz.usarMedKit()) {
-                        System.out.println("Kit usado com sucesso!");
-                        itemUsado = true;
-                    } else {
-                        System.out.println("Não tem mais kits!");
-                        itemUsado = false;
-                    }
-                    break;
-            }
-        } while (!itemUsado);
-
-        if (!jogadorEmCombate)
-            toCruz.apanharItens();
-        return instakill;
     }
 
     public boolean turnoToCruz(Edificio edificio, Iterator<Divisao> caminho) {
@@ -272,7 +218,11 @@ public class Jogo {
         }
 
         // ATACAR
-        divisao = toCruz.getDivisao();
+        atacarToCruz();
+    }
+
+    private void atacarToCruz() {
+        Divisao divisao = toCruz.getDivisao();
         Iterator<Inimigo> inimigos = divisao.getInimigos();
         while (inimigos.hasNext())
             inimigos.next().atacar(toCruz);
