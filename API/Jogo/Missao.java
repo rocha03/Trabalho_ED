@@ -25,7 +25,7 @@ public class Missao {
     public Edificio getEdificio(int num) {
         Iterator<Edificio> iterator = edificios.iterator();
         int i = 0;
-        while (i < num-1) {
+        while (i < num - 1) {
             iterator.next();
             i++;
         }

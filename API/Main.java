@@ -69,7 +69,7 @@ public class Main {
             } while (op <= 0 || op > missao.getNumMapas());
 
             // TODO show map
-            new ShowASCII(); // por implementar
+            verMapa(missao.getEdificio(op)); // por implementar
 
             System.out.println("Confirmar escolha? (y/n)");
             String temp = scanner.nextLine();
@@ -92,11 +92,16 @@ public class Main {
         jogo.adicionarNovaMissao(json_Editor.JSON_Read(filePath));
     }
 
+    public String verMapa(Edificio edificio) {
+        ShowASCII testEdificio = new ShowASCII(edificio);
+        return testEdificio.ShowEdificio();
+    }
+
     public static void main(String[] args) {
         Main main = new Main();
 
         // Tests
-        Missao missao = new Missao("patade coelho", null);
-        main.escolherMapa(missao);
+
+        main.verMapa(null);
     }
 }
