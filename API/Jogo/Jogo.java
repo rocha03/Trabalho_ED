@@ -123,7 +123,6 @@ public class Jogo {
     public void iniciarTurnosAuto(Edificio edificio) {
         boolean jogoAtivo = true;
         boolean instakill = false;
-        boolean missaoConcluida = false;
 
         // Escolher caminho
         Iterator<Divisao> caminho = edificio.getAutoPath(false);

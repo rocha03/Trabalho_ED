@@ -25,7 +25,7 @@ public class Main {
 
         int op = 0;
         do {
-            System.out.print("Escolha o Modo de Jogo: \n\n 1. Maunal;\n 2. Auto.\n");
+            System.out.print("Escolha o Modo de Jogo: \n\n 1. Maunal;\n 2. Auto.\n\n");
             op = scanner.nextInt();
         } while (op <= 0 || op > 2);
         switch (op) {
@@ -125,7 +125,7 @@ public class Main {
         boolean entradaValida = false;
 
         // Obter as missões disponíveis apenas uma vez
-        String missoesDisponiveis = "Escolha uma missão:\n";
+        String missoesDisponiveis = "";
         Iterator<Missao> missoes = jogo.verMissoesDisponiveis();
         int numMissoes = jogo.getNumMissoes(), i = 1;
         while (missoes.hasNext())
@@ -140,10 +140,10 @@ public class Main {
                 op = scanner.nextInt();
 
                 // Validar se está dentro do intervalo permitido
-                if (op <= 0 && op > numMissoes) {
-                    entradaValida = true;
-                } else {
+                if (op <= 0 || op > numMissoes) {
                     System.out.println("Opção inválida! Escolha um número entre 1 e " + numMissoes + ".");
+                } else {
+                    entradaValida = true;
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Entrada inválida! Digite apenas números.");
@@ -253,5 +253,7 @@ public class Main {
 
         // Tests
         main.importarNovaMissao("D:/alexv/PROJETOS/ED_Java/Trabalho/Resource/test.json");
+
+        main.iniciarJogo();
     }
 }

@@ -8,7 +8,6 @@ import DataStructs.List.UnorderedList.LinkedUnorderedList;
 import DataStructs.Stack.LinkedStack;
 import Exceptions.EmptyCollectionException;
 import Interfaces.StackADT;
-import Interfaces.List.ListADT;
 import Interfaces.List.UnorderedListADT;
 
 /**

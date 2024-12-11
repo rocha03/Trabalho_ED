@@ -21,7 +21,6 @@ import DataStructs.Stack.LinkedStack;
 import Exceptions.ElementNotFoundException;
 import Exceptions.EmptyCollectionException;
 import Interfaces.StackADT;
-import Interfaces.List.ListADT;
 import Interfaces.List.UnorderedListADT;
 
 public class JSON_Editor {
@@ -51,11 +50,13 @@ public class JSON_Editor {
             processarVertices(jsonObject, mapa);
             processarArestas(jsonObject, mapa);
 
+            processarEntradas(jsonObject, mapa);
+
             // Reconhencer o alvo
             Alvo alvo = processarAlvo(jsonObject, mapa);
 
             // Edificio como um todo
-            Edificio edificio = new Edificio(versao, mapa, processarEntradas(jsonObject), alvo);
+            Edificio edificio = new Edificio(versao, mapa, alvo);
 
             UnorderedListADT<Edificio> edificios = new LinkedUnorderedList<>();
             edificios.addToRear(edificio);
@@ -94,7 +95,8 @@ public class JSON_Editor {
             throw new IllegalArgumentException("Campo 'edificio' ausente ou inválido.");
 
         for (Object item : divisoesArray)
-            mapa.addVertex(new Divisao((String) item, processarInimigos(jsonObject, (String) item), processarItens(jsonObject, (String) item)));
+            mapa.addVertex(new Divisao((String) item, processarInimigos(jsonObject, (String) item),
+                    processarItens(jsonObject, (String) item)));
     }
 
     private void processarArestas(JSONObject jsonObject, Mapa<Divisao> mapa) {
@@ -149,16 +151,20 @@ public class JSON_Editor {
         return null;
     }
 
-    private ListADT<Divisao> processarEntradas(JSONObject jsonObject) {
-        JSONArray entradasArray = (JSONArray) jsonObject.get("entradas-saidas");
-        if (entradasArray == null)
-            throw new IllegalArgumentException("Campo 'entradas-saidas' ausente ou inválido.");
+    private void processarEntradas(JSONObject jsonObject, Mapa<Divisao> mapa) {
+        try {
+            JSONArray entradasArray = (JSONArray) jsonObject.get("entradas-saidas");
+            if (entradasArray == null)
+                throw new IllegalArgumentException("Campo 'entradas-saidas' ausente ou inválido.");
 
-        UnorderedListADT<Divisao> entradas = new LinkedUnorderedList<Divisao>();
-        for (Object obj : entradasArray) {
-            entradas.addToRear(new Divisao((String) obj, null, null));
+            for (Object obj : entradasArray) {
+                Divisao divisao;
+                divisao = mapa.getVertex(new Divisao((String) obj, null, null));
+                divisao.setEntrada(true);
+            }
+        } catch (ElementNotFoundException | EmptyCollectionException e) {
+            e.printStackTrace();
         }
-        return (ListADT<Divisao>) entradas;
     }
 
     private StackADT<Item> processarItens(JSONObject jsonObject, String divisao) {
@@ -166,12 +172,14 @@ public class JSON_Editor {
         if (itensArray == null)
             throw new IllegalArgumentException("Campo 'itens' ausente ou inválido.");
 
-            StackADT<Item> itens = new LinkedStack<Item>();
+        StackADT<Item> itens = new LinkedStack<Item>();
         for (Object obj : itensArray) {
             JSONObject itemObject = (JSONObject) obj;
             String destino = (String) itemObject.get("divisao");
-            int pontos = ((Long) itemObject.get("pontos-recuperados")).intValue();
+            long recuperados = itemObject.containsKey("pontos-recuperados") ? ((long) itemObject.get("pontos-recuperados")) : 0;
+            long extra = itemObject.containsKey("pontos-extra") ? ((long) itemObject.get("pontos-extra")) : 0;
             String tipo = (String) itemObject.get("tipo");
+            int pontos = (int) (recuperados + extra);
 
             if (divisao.equals(destino))
                 switch (tipo) {
@@ -185,11 +193,5 @@ public class JSON_Editor {
 
         }
         return itens;
-    }
-
-    public static void main(String[] args) {
-        JSON_Editor json_Editor = JSON_Editor.getInstance();
-
-        Missao missao = json_Editor.JSON_Read("D:/alexv/PROJETOS/ED_Java/Trabalho/Resource/test.json");
     }
 }
