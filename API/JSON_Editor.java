@@ -69,7 +69,7 @@ public class JSON_Editor {
     }
 
     private String processarCodigo(JSONObject jsonObject) {
-        Object codMissaoObj = jsonObject.get("cod-misao");
+        Object codMissaoObj = jsonObject.get("cod-missao");
 
         if (codMissaoObj instanceof String) {
             return (String) codMissaoObj;

@@ -1,10 +1,9 @@
 package API.Jogo.Mapa;
 
 import java.util.Iterator;
-import java.util.function.Function;
 
+import DataStructs.List.UnorderedList.ArrayUnorderedList;
 import DataStructs.List.UnorderedList.LinkedUnorderedList;
-import Interfaces.List.ListADT;
 import Interfaces.List.UnorderedListADT;
 
 /**
@@ -139,10 +138,46 @@ public class Edificio {
             if (divisao.isEntrada())
                 list.addToRear(divisao);
         }
-        // Creating the Function<Divisao, Integer> to calculate the special count
-        Function<Divisao, Integer> specialCountFunction = divisao -> {
-            return divisao.getSpecialCount();
-        };
-        return mapa.findOptimalPath(list, alvo.getDivisao(), specialCountFunction, isReverse);
+
+        // Initialize variables to track the optimal path and its special vertex count
+        int minSpecialCount = Integer.MAX_VALUE; // Set to a large number to start with
+        UnorderedListADT<Divisao> optimalPath = new LinkedUnorderedList<>();
+
+        // Use an iterator for list to iterate over starting vertices
+        Iterator<Divisao> listIterator = list.iterator();
+
+        while (listIterator.hasNext()) {
+            Divisao list2Vertex = listIterator.next();
+
+            // Decide direction of pathfinding based on the isReverse parameter
+            Iterator<Divisao> pathIterator;
+            if (isReverse) {
+                pathIterator = mapa.iteratorShortestPath(alvo.getDivisao(), list2Vertex); // Reverse direction
+            } else {
+                pathIterator = mapa.iteratorShortestPath(list2Vertex, alvo.getDivisao()); // Forward direction
+            }
+
+            // Track special vertices count for the current path
+            int specialCount = 0;
+            UnorderedListADT<Divisao> currentPath = new ArrayUnorderedList<>();
+
+            // Build the path and count special vertices
+            while (pathIterator.hasNext()) {
+                Divisao currentVertex = pathIterator.next();
+                currentPath.addToRear(currentVertex);
+
+                // Count special vertices using the provided specialCountFunction
+                specialCount += currentVertex.getSpecialCount();
+            }
+
+            // Check if this path has fewer special vertices than the previous best path
+            if (specialCount < minSpecialCount) {
+                minSpecialCount = specialCount;
+                optimalPath = currentPath;
+            }
+        }
+
+        // Return the optimal path with the least special vertices as an iterator
+        return optimalPath.iterator();
     }
 }
