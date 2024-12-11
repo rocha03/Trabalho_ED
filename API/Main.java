@@ -9,7 +9,6 @@ import API.Jogo.Missao;
 import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
 import API.Jogo.Personagem.Inimigo;
-import API.Jogo.JogoGrafico.ShowASCII;
 
 public class Main {
 
