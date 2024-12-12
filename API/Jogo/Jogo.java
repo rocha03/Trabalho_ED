@@ -63,6 +63,9 @@ public class Jogo {
 
     public void entrarNoMapa(Divisao divisao) {
         toCruz.setDivisao(divisao);
+
+        if (toCruz.getDivisao().getNumInimigos() > 0)
+            toCruz.entrarOuSairCombate(true);
     }
 
     public boolean getStatusCombate() {
@@ -128,6 +131,9 @@ public class Jogo {
         // Escolher caminho
         Iterator<Divisao> caminho = edificio.getAutoPath(false);
         toCruz.setDivisao(caminho.next());
+
+        if (toCruz.getDivisao().getNumInimigos() > 0)
+            toCruz.entrarOuSairCombate(true);
 
         while (jogoAtivo) {
             // Turno To Cruz
