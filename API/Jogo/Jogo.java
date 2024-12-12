@@ -1,6 +1,7 @@
 package API.Jogo;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import API.Jogo.Mapa.Divisao;

@@ -2,7 +2,6 @@ package API;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Iterator;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -196,37 +195,5 @@ public class JSON_Editor {
 
         }
         return itens;
-    }
-
-    public static void main(String[] args) {
-        JSON_Editor json_Editor = JSON_Editor.getInstance();
-
-        Missao missao = json_Editor.JSON_Read("D:/alexv/PROJETOS/ED_Java/Trabalho/Resource/test.json");
-
-        /* System.out.println(missao.getCod_missao());
-
-        Edificio edificio = missao.getEdificios().next();
-
-        System.out.println(edificio.getVersao());
-
-        System.out.println(json_Editor.verMapa(edificio)); */
-    }
-
-    public String verMapa(Edificio edificio) {
-        String asciiRepresentation = "";
-
-        Iterator<Divisao> divisoes = edificio.getMapa().getVertices();
-
-        while (divisoes.hasNext()) {
-            Divisao divisao = divisoes.next();
-            asciiRepresentation += " " + divisao.getNome() + " ";
-
-            Iterator<Divisao> ligacoes = edificio.getAdjacentes(divisao);
-            while (ligacoes.hasNext())
-                asciiRepresentation += " <-> " + ligacoes.next().getNome();
-            asciiRepresentation += "\n";
-        }
-
-        return asciiRepresentation;
     }
 }
