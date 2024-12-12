@@ -250,8 +250,8 @@ public class Main {
         Main main = new Main();
 
         // Tests
-        main.importarNovaMissao("C:/Users/Arneiro/Desktop/ESTG/2º Ano/ED/Trabalho_ED/Resource/test.json");
-        //main.importarNovaMissao("D:/alexv/PROJETOS/ED_Java/Trabalho/Resource/test.json");
+        // main.importarNovaMissao("C:/Users/Arneiro/Desktop/ESTG/2º Ano/ED/Trabalho_ED/Resource/test.json");
+        // main.importarNovaMissao("D:/alexv/PROJETOS/ED_Java/Trabalho/Resource/test.json");
 
         main.iniciarJogo();
     }
