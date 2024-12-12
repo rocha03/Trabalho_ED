@@ -1,9 +1,13 @@
 package API.Jogo.Mapa;
 
 import java.util.Iterator;
+import java.util.Random;
 
+import API.Jogo.Personagem.Inimigo;
 import DataStructs.List.UnorderedList.ArrayUnorderedList;
 import DataStructs.List.UnorderedList.LinkedUnorderedList;
+import Exceptions.ElementNotFoundException;
+import Exceptions.EmptyCollectionException;
 import Interfaces.List.UnorderedListADT;
 
 /**
@@ -25,6 +29,7 @@ public class Edificio {
      * O alvo associado ao edifício.
      */
     private Alvo alvo;
+    private Random random = new Random();
 
     /**
      * Construtor que inicializa um edifício com uma versão, mapa, entradas e alvo.
@@ -146,7 +151,7 @@ public class Edificio {
             } else {
                 pathIterator = mapa.iteratorShortestPath(vertex, alvo.getDivisao()); // Forward direction
             }
-            
+
             // Track special vertices count for the current path
             int specialCount = 0;
             UnorderedListADT<Divisao> currentPath = new ArrayUnorderedList<>();
@@ -170,4 +175,90 @@ public class Edificio {
         // Return the optimal path with the least special vertices as an iterator
         return optimalPath.iterator();
     }
+
+    
+
+    public void moveEnemies(Divisao startDivision) {
+        // Reset all enemies' movement state
+        resetEnemyMovements();
+
+        // Traverse the graph using your BFS traversal
+        Iterator<Divisao> bfsIterator = mapa.iteratorBFS(startDivision);
+        bfsIterator.next();
+        while (bfsIterator.hasNext()) {
+            Divisao currentDivision = bfsIterator.next();
+            moveEnemiesInDivision(currentDivision);
+        }
+    }
+
+    private void moveEnemiesInDivision(Divisao division) {
+        // Prepare a list to track enemies that will be moved
+        UnorderedListADT<Inimigo> toMove = new LinkedUnorderedList<>();
+
+        Iterator<Inimigo> inimigos = division.getInimigos().iterator();
+        while (inimigos.hasNext()) {
+            Inimigo enemy = inimigos.next();
+            if (!enemy.isMoved()) {
+                toMove.addToRear(enemy);
+            }
+        }
+
+        // Move each enemy
+        Iterator<Inimigo> iterator = toMove.iterator();
+        try {
+            while (iterator.hasNext()) {
+                Inimigo enemy = iterator.next();
+                Divisao destination = calculateRandomDestination(division, 1 + random.nextInt(2));
+                if (destination != null) {
+                    division.getInimigos().remove(enemy);
+                    destination.adicionarInimigo(enemy);
+                    enemy.setMoved(true);
+                }
+            }
+        } catch (EmptyCollectionException | ElementNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Divisao calculateRandomDestination(Divisao start, int steps) {
+        Divisao current = start;
+
+        for (int i = 0; i < steps; i++) {
+            Iterator<Divisao> adjacentes = getAdjacentes(current);
+            if (!adjacentes.hasNext()) {
+                return current; // No further movement possible
+            }
+            int count = 0;
+            while (adjacentes.hasNext()) {
+                adjacentes.next();
+                count++;
+            }
+            int randomIndex = random.nextInt(count);
+            adjacentes = getAdjacentes(current);
+            Divisao nextDivision = null;
+            for (int j = 0; adjacentes.hasNext(); j++) {
+                nextDivision = adjacentes.next();
+                if (j == randomIndex) {
+                    break;
+                }
+            }
+            // Update the current division
+            current = nextDivision;
+        }
+
+        return current;
+    }
+
+    private void resetEnemyMovements() {
+        // Traverse the graph using BFS and reset all enemies' movement state
+        Iterator<Divisao> iterator = mapa.getVertices();
+        while (iterator.hasNext()) {
+            Divisao currentDivision = iterator.next();
+            Iterator<Inimigo> inimigos = currentDivision.getInimigos().iterator();
+            while (inimigos.hasNext()) {
+                inimigos.next().setMoved(false);
+            }
+        }
+    }
+
 }

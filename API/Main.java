@@ -41,7 +41,7 @@ public class Main {
     private void jogoManual(Edificio edificio) {
         jogo.entrarNoMapa(escolherEntrada(edificio));
 
-        boolean jogoAtivo = true, itemUsado = true, instakill = false;
+        boolean jogoAtivo = true, itemUsado = true, instakill = false, sair = false;
         int op = 0;
         while (jogoAtivo) {
             do {
@@ -86,8 +86,7 @@ public class Main {
                 }
             } while (!itemUsado);
 
-            jogoAtivo = jogo.finalizarTurnos(edificio, instakill,
-                    jogo.getDivisaoAtual().isEntrada() ? escolherSair() : false);
+            jogoAtivo = jogo.finalizarTurnos(edificio, instakill, jogo.getDivisaoAtual().isEntrada() ? escolherSair() : false);
         }
 
         // Mensagem final
@@ -172,9 +171,9 @@ public class Main {
 
             verMapa(missao.getEdificio(op));
 
-            System.out.println("Confirmar escolha? (y/n)\n");
-            String temp = scanner.nextLine();
-            if (temp.toLowerCase().equals("y")) // altera para lowercase e verifica se é a opção correta
+            System.out.println("Confirmar escolha? (y/n)\n 1. Sim\n 2. Não\n");
+            int temp = scanner.nextInt();
+            if (temp == 1) // altera para lowercase e verifica se é a opção correta
                 confirmar = true;
         } while (!confirmar);
         return missao.getEdificio(op);
@@ -198,9 +197,9 @@ public class Main {
     }
 
     private boolean escolherSair() {
-        System.out.println("Está numa saida, quer sair da Missão? (y/n)");
-        String choice = scanner.nextLine();
-        if (choice.toLowerCase().equals("y"))
+        System.out.println("Está numa saida, quer sair da Missão?\n 1. Sair\n 2. Ficar\n");
+        int choice = scanner.nextInt();
+        if (choice == 1)
             return true;
         return false;
     }

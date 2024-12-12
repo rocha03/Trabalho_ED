@@ -6,6 +6,7 @@ import API.Jogo.Itens.Item;
 import API.Jogo.Personagem.Inimigo;
 import Exceptions.EmptyCollectionException;
 import Interfaces.StackADT;
+import Interfaces.List.ListADT;
 import Interfaces.List.UnorderedListADT;
 
 public class Divisao {
@@ -25,8 +26,8 @@ public class Divisao {
         return nome;
     }
 
-    public Iterator<Inimigo> getInimigos() {
-        return inimigos.iterator();
+    public ListADT<Inimigo> getInimigos() {
+        return inimigos;
     }
 
     public int getNumInimigos() {

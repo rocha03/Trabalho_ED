@@ -173,7 +173,7 @@ public class ToCruz extends Combatente {
      *         foram derrotados ou quantos ainda permanecem na sala.
      */
     public Iterator<Inimigo> atacar() {
-        Iterator<Inimigo> iterator = divisao.getInimigos();
+        Iterator<Inimigo> iterator = divisao.getInimigos().iterator();
         UnorderedListADT<Inimigo> derrotados = new LinkedUnorderedList<>();
         Inimigo inimigo;
         while (iterator.hasNext()) {

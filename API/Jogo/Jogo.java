@@ -1,7 +1,6 @@
 package API.Jogo;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
 import API.Jogo.Mapa.Divisao;
@@ -137,7 +136,7 @@ public class Jogo {
 
         while (jogoAtivo) {
             // Turno To Cruz
-            instakill = turnoToCruz(edificio, caminho);
+            instakill = turnoToCruz(caminho);
             // Interagir com o Alvo
             if (!toCruz.estaEmCombate() && edificio.getAlvo().getDivisao().equals(toCruz.getDivisao())) {
                 edificio.getAlvo().setInteragido(true);
@@ -153,7 +152,7 @@ public class Jogo {
         }
     }
 
-    public boolean turnoToCruz(Edificio edificio, Iterator<Divisao> caminho) {
+    public boolean turnoToCruz(Iterator<Divisao> caminho) {
         boolean jogadorEmCombate = toCruz.estaEmCombate();
         boolean instakill = false;
 
@@ -179,50 +178,7 @@ public class Jogo {
         // MOVER
         Random random = new Random();
 
-        Iterator<Divisao> divisoes = edificio.getMapa().iteratorBFS(toCruz.getDivisao());
-        divisoes.next();
-        Divisao divisao;
-        while (divisoes.hasNext()) {
-            divisao = divisoes.next();
-            Iterator<Inimigo> inimigos = divisao.getInimigos();
-            Inimigo inimigo;
-            while (inimigos.hasNext()) {
-                inimigo = inimigos.next();
-                if (!inimigo.isMoved()) {
-                    // Identificar nova divisao
-                    int numMov = random.nextInt(2) + 1;
-                    Divisao destino = divisao;
-                    for (int i = 0; i < numMov; i++) {
-                        int num = 0, j = 0;
-                        Iterator<Divisao> adjacentes = edificio.getAdjacentes(destino);
-                        while (adjacentes.hasNext()) {
-                            adjacentes.next();
-                            num++;
-                        }
-                        int select = random.nextInt(num) + 1;
-                        adjacentes = edificio.getAdjacentes(destino);
-                        while (adjacentes.hasNext() && j < select) { // < ou <=
-                            destino = adjacentes.next();
-                            j++;
-                        }
-                    }
-
-                    // Ato de mover
-                    inimigo.setMoved(true);
-                    inimigos.remove();
-                    destino.adicionarInimigo(inimigo);
-                }
-            }
-        }
-        // Limpar registos de movimento
-        divisoes = edificio.getMapa().iteratorBFS(toCruz.getDivisao());
-        divisoes.next();
-        while (divisoes.hasNext()) {
-            divisao = divisoes.next();
-            Iterator<Inimigo> inimigos = divisao.getInimigos();
-            while (inimigos.hasNext())
-                inimigos.next().setMoved(false);
-        }
+        edificio.moveEnemies(getDivisaoAtual());
 
         // ATACAR
         atacarToCruz();
@@ -230,7 +186,7 @@ public class Jogo {
 
     private void atacarToCruz() {
         Divisao divisao = toCruz.getDivisao();
-        Iterator<Inimigo> inimigos = divisao.getInimigos();
+        Iterator<Inimigo> inimigos = divisao.getInimigos().iterator();
         while (inimigos.hasNext())
             inimigos.next().atacar(toCruz);
     }
