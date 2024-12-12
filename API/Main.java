@@ -41,7 +41,7 @@ public class Main {
     private void jogoManual(Edificio edificio) {
         jogo.entrarNoMapa(escolherEntrada(edificio));
 
-        boolean jogoAtivo = true, itemUsado = true, instakill = false, sair = false;
+        boolean jogoAtivo = true, itemUsado = true, instakill = false;
         int op = 0;
         while (jogoAtivo) {
             do {

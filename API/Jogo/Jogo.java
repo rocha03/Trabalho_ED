@@ -1,7 +1,6 @@
 package API.Jogo;
 
 import java.util.Iterator;
-import java.util.Random;
 
 import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
@@ -72,7 +71,10 @@ public class Jogo {
     }
 
     public Iterator<Inimigo> atacarInimigos() {
-        return toCruz.atacar();
+        Iterator<Inimigo> iterator = toCruz.atacar();
+        if (toCruz.getDivisao().getNumInimigos() == 0)
+            toCruz.entrarOuSairCombate(false);
+        return iterator;
     }
 
     public boolean moverToCruz(Edificio edificio, int index) {
@@ -176,8 +178,6 @@ public class Jogo {
 
     public void turnoInimigos(Edificio edificio) {
         // MOVER
-        Random random = new Random();
-
         edificio.moveEnemies(getDivisaoAtual());
 
         // ATACAR
