@@ -41,16 +41,18 @@ public class Main {
     private void jogoManual(Edificio edificio) {
         jogo.entrarNoMapa(escolherEntrada(edificio));
 
-        boolean jogoAtivo = true, itemUsado = true, instakill = false;
+        boolean jogoAtivo = true, naoRepetir, instakill = false;
         int op = 0;
         while (jogoAtivo) {
             do {
+                naoRepetir = true;
                 do {
                     System.out.println(jogo.getStatusCombate() ? "Escolher ação (Combate):" : "Escolher ação:");
-                    System.out.println(" 1. " + (jogo.getStatusCombate() ? "Atacar" : "Mover"));
-                    System.out.println(" 2. Usar Kit.");
+                    System.out.println(" 1. " + (jogo.getStatusCombate() ? "Atacar;" : "Mover;"));
+                    System.out.println(" 2. Usar Kit;");
+                    System.out.println(" 3. Ver Mapa.");
                     op = scanner.nextInt();
-                } while (op <= 0 || op > 2);
+                } while (op <= 0 || op > 3);
                 switch (op) {
                     case 1:
                         if (jogo.getStatusCombate()) {
@@ -73,20 +75,25 @@ public class Main {
                                 }
                                 option = scanner.nextInt();
                             } while (option <= 0 || option > i);
-                            // Mostrar adj maybe? com o ver adj
                             instakill = jogo.moverToCruz(edificio, option);
+                            System.out.println(verAdjacentes(edificio));
                         }
                         break;
                     case 2:
-                        itemUsado = jogo.curarToCruz();
-                        if (itemUsado)
+                        naoRepetir = jogo.curarToCruz();
+                        if (naoRepetir)
                             System.out.println("Kit usado com sucesso!");
                         System.out.println("Não tem mais kits!");
                         break;
+                    case 3:
+                        verMapa(edificio);
+                        naoRepetir = false;
+                        break;
                 }
-            } while (!itemUsado);
+            } while (naoRepetir == false);
 
-            jogoAtivo = jogo.finalizarTurnos(edificio, instakill, jogo.getDivisaoAtual().isEntrada() ? escolherSair() : false);
+            jogoAtivo = jogo.finalizarTurnos(edificio, instakill,
+                    jogo.getDivisaoAtual().isEntrada() ? escolherSair() : false);
         }
 
         // Mensagem final
@@ -213,7 +220,8 @@ public class Main {
 
         while (divisoes.hasNext()) {
             Divisao divisao = divisoes.next();
-            asciiRepresentation += (jogo.getDivisaoAtual().equals(divisao)) ? "[" + divisao.getNome() + "]" : " " + divisao.getNome() + " ";
+            asciiRepresentation += (jogo.getDivisaoAtual().equals(divisao)) ? "[" + divisao.getNome() + "]"
+                    : " " + divisao.getNome() + " ";
             asciiRepresentation += adjacentes(edificio, divisao);
         }
 
@@ -250,8 +258,9 @@ public class Main {
         Main main = new Main();
 
         // Tests
-        // main.importarNovaMissao("C:/Users/Arneiro/Desktop/ESTG/2º Ano/ED/Trabalho_ED/Resource/test.json");
-        // main.importarNovaMissao("D:/alexv/PROJETOS/ED_Java/Trabalho/Resource/test.json");
+        // main.importarNovaMissao("C:/Users/Arneiro/Desktop/ESTG/2º
+        // Ano/ED/Trabalho_ED/Resource/test.json");
+        //main.importarNovaMissao("D:/alexv/PROJETOS/ED_Java/Trabalho/Resource/test.json");
 
         main.iniciarJogo();
     }

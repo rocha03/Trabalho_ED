@@ -1,5 +1,7 @@
 package API.Jogo.Personagem;
 
+import java.util.Random;
+
 /**
  * Representa um Inimigo, uma extensão de Combatente, com nome e estado de
  * movimento.
@@ -14,6 +16,7 @@ public class Inimigo extends Combatente {
      * Indica se o inimigo já se moveu.
      */
     private boolean moved;
+    private Random random = new Random();
 
     /**
      * Construtor que inicializa um Inimigo com nome e poder específicos.
@@ -23,7 +26,7 @@ public class Inimigo extends Combatente {
      */
     public Inimigo(String nome, int poder) {
         super();
-        this.vida = 20;
+        this.vida = 10 + random.nextInt(51);
         this.nome = nome;
         this.poder = poder;
         this.moved = false;
