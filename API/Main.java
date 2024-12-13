@@ -16,18 +16,18 @@ public class Main {
     private static final JSON_Editor json_Editor = JSON_Editor.getInstance();
     private static final Scanner scanner = new Scanner(System.in);
 
-    private static final String MSG_SUCESSO = "Missão Concluída com Sucesso!";
-    private static final String MSG_FALHA = "O Tó Cruz falhou a missão...";
-    private static final String MSG_DERROTA = "Tó Cruz foi derrotado...";
-
     public Main() {
     }
 
     public void iniciarJogo() {
         Missao missao = escolherMissao();
         Edificio edificio = escolherMapa(missao);
-        int op = escolherModoJogo();
 
+        int op = 0;
+        do {
+            System.out.print("Escolha o Modo de Jogo: \n\n 1. Maunal;\n 2. Auto.\n\n");
+            op = scanner.nextInt();
+        } while (op <= 0 || op > 2);
         switch (op) {
             case 1:
                 jogoManual(edificio);
@@ -38,190 +38,157 @@ public class Main {
         }
     }
 
-    private int escolherModoJogo() {
-        int op;
-        do {
-            System.out.print("Escolha o Modo de Jogo: \n\n 1. Manual;\n 2. Auto.\n\n");
-            op = scanner.nextInt();
-        } while (op <= 0 || op > 2);
-        return op;
-    }
-
     private void jogoManual(Edificio edificio) {
         jogo.entrarNoMapa(escolherEntrada(edificio));
+
         boolean jogoAtivo = true, itemUsado = true, instakill = false;
-        
+        int op = 0;
         while (jogoAtivo) {
-            itemUsado = executarAcoesNoJogo(instakill, edificio);
+            do {
+                do {
+                    System.out.println(jogo.getStatusCombate() ? "Escolher ação (Combate):" : "Escolher ação:");
+                    System.out.println(" 1. " + (jogo.getStatusCombate() ? "Atacar" : "Mover"));
+                    System.out.println(" 2. Usar Kit.");
+                    op = scanner.nextInt();
+                } while (op <= 0 || op > 2);
+                switch (op) {
+                    case 1:
+                        if (jogo.getStatusCombate()) {
+                            Iterator<Inimigo> derrotados = jogo.atacarInimigos();
+                            if (derrotados.hasNext()) {
+                                System.out.println("Os inimigos seguintes foram derrotados:");
+                                while (derrotados.hasNext())
+                                    System.out.println(" - " + derrotados.next().getNome());
+                            }
+                        } else {
+                            int option = 0, i = 0;
+                            do {
+                                // Exibe divisões adjacentes e espera a escolha do jogador
+                                System.out.println("Divisão atual: " + jogo.getDivisaoAtual().getNome());
+                                System.out.println("Escolha a divisão para onde mover:");
+                                Iterator<Divisao> iterator = edificio.getAdjacentes(jogo.getDivisaoAtual());
+                                i = 0;
+                                while (iterator.hasNext()) {
+                                    System.out.println(" " + (++i) + ". " + iterator.next().getNome());
+                                }
+                                option = scanner.nextInt();
+                            } while (option <= 0 || option > i);
+                            // Mostrar adj maybe? com o ver adj
+                            instakill = jogo.moverToCruz(edificio, option);
+                        }
+                        break;
+                    case 2:
+                        itemUsado = jogo.curarToCruz();
+                        if (itemUsado)
+                            System.out.println("Kit usado com sucesso!");
+                        System.out.println("Não tem mais kits!");
+                        break;
+                }
+            } while (!itemUsado);
+
             jogoAtivo = jogo.finalizarTurnos(edificio, instakill, jogo.getDivisaoAtual().isEntrada() ? escolherSair() : false);
         }
 
-        finalizarJogo(edificio);
-    }
-
-    private boolean atacarInimigos() {
-        Iterator<Inimigo> derrotados = jogo.atacarInimigos();
-        if (derrotados.hasNext()) {
-            System.out.println("Os inimigos seguintes foram derrotados:");
-            while (derrotados.hasNext())
-                System.out.println(" - " + derrotados.next().getNome());
-            return true;
-        }
-        return false;
-    }
-
-    private boolean executarAcoesNoJogo(boolean instakill, Edificio edificio) {
-        int op;
-        boolean itemUsado;
-        do {
-            op = escolherAcao();
-            itemUsado = processarAcao(op, instakill, edificio);
-        } while (!itemUsado);
-        return itemUsado;
-    }
-
-    private int escolherAcao() {
-        int op;
-        do {
-            System.out.println(jogo.getStatusCombate() ? "Escolher ação (Combate):" : "Escolher ação:");
-            System.out.println(" 1. " + (jogo.getStatusCombate() ? "Atacar" : "Mover"));
-            System.out.println(" 2. Usar Kit.");
-            op = scanner.nextInt();
-        } while (op <= 0 || op > 2);
-        return op;
-    }
-
-    private boolean processarAcao(int op, boolean instakill, Edificio edificio) {
-        boolean itemUsado = false;
-        switch (op) {
+        // Mensagem final
+        switch (jogo.gameStatus(edificio)) {
             case 1:
-                itemUsado = jogo.getStatusCombate() ? atacarInimigos() : moverParaOutraDivisao(edificio);
+                System.out.println("Missão Concluída com Sucesso!");
                 break;
             case 2:
-                itemUsado = usarKitDeCura();
+                System.out.println("O Tó Cruz falhou a missão...");
+                break;
+            case 3:
+                System.out.println("Tó Cruz foi derrotado...");
                 break;
         }
-        return itemUsado;
-    }
-
-    private boolean moverParaOutraDivisao(Edificio edificio) {
-        int option, i = 0;
-        do {
-            System.out.println("Divisão atual: " + jogo.getDivisaoAtual().getNome());
-            System.out.println("Escolha a divisão para onde mover:");
-            Iterator<Divisao> iterator = edificio.getAdjacentes(jogo.getDivisaoAtual());
-            i=0;
-            while (iterator.hasNext()) {
-                System.out.println(" " + ++i + ". " + iterator.next().getNome());
-            }
-            option = scanner.nextInt();
-        } while (option <= 0 || option > i);
-        return jogo.moverToCruz(edificio, option);
-    }
-
-    private boolean usarKitDeCura() {
-        boolean itemUsado = jogo.curarToCruz();
-        if (itemUsado)
-            System.out.println("Kit usado com sucesso!");
-        else
-            System.out.println("Não tem mais kits!");
-        return itemUsado;
     }
 
     private void jogoAutomatico(Edificio edificio) {
         jogo.iniciarTurnosAuto(edificio);
 
         // Mensagem final
-        finalizarJogo(edificio);
-    }
-
-    private void finalizarJogo(Edificio edificio) {
         switch (jogo.gameStatus(edificio)) {
             case 1:
-                System.out.println(MSG_SUCESSO);
+                System.out.println("Missão Concluída com Sucesso!");
                 break;
             case 2:
-                System.out.println(MSG_FALHA);
+                System.out.println("O Tó Cruz falhou a missão...");
                 break;
             case 3:
-                System.out.println(MSG_DERROTA);
+                System.out.println("Tó Cruz foi derrotado...");
                 break;
         }
     }
 
     private Missao escolherMissao() {
-        String missoesDisponiveis = obterMissoesDisponiveis();
-        int op;
+        int op = 0;
+        boolean entradaValida = false;
+
+        // Obter as missões disponíveis apenas uma vez
+        String missoesDisponiveis = "";
+        Iterator<Missao> missoes = jogo.verMissoesDisponiveis();
+        int numMissoes = jogo.getNumMissoes(), i = 1;
+        while (missoes.hasNext())
+            missoesDisponiveis += " " + i++ + ". " + missoes.next().getCod_missao() + "\n";
+
         do {
             System.out.println("Escolha uma das missões disponíveis:");
             System.out.println(missoesDisponiveis);
-            op = capturarNumeroValido("Insira o número da missão desejada:");
-        } while (op <= 0 || op > jogo.getNumMissoes());
+
+            try {
+                System.out.print("Insira o número da missão desejada:\n");
+                op = scanner.nextInt();
+
+                // Validar se está dentro do intervalo permitido
+                if (op <= 0 || op > numMissoes) {
+                    System.out.println("Opção inválida! Escolha um número entre 1 e " + numMissoes + ".");
+                } else {
+                    entradaValida = true;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida! Digite apenas números.");
+                scanner.nextLine(); // Consumir a entrada inválida do buffer
+            }
+        } while (!entradaValida);
+
         return jogo.getMissao(op);
     }
 
-    private String obterMissoesDisponiveis() {
-        String missoesDisponiveis = "";
-        Iterator<Missao> missoes = jogo.verMissoesDisponiveis();
-        int i = 1;
-        while (missoes.hasNext()) {
-            missoesDisponiveis += " " + i++ + ". " + missoes.next().getCod_missao() + "\n";
-        }
-        return missoesDisponiveis.toString();
-    }
-
-    private int capturarNumeroValido(String promt) {
-        int op = 0;
-        boolean entradaValida = false;
-        do {
-            try {
-                System.out.println(promt);
-                op = scanner.nextInt();
-                entradaValida = true;
-            } catch (InputMismatchException e) {
-                System.out.println("Entrada invalida! Digite apenas numeros.");
-                scanner.nextLine(); // Consumir entrada invalida
-            }
-        } while (!entradaValida);
-        return op;
-    }
-
     private Edificio escolherMapa(Missao missao) {
-        int op;
+        int op = 0;
+        boolean confirmar = false;
         if (missao.getNumMapas() == 1)
             return missao.getEdificio(1);
         do {
-            exibirMapasDisponiveis(missao);
-            op = capturarNumeroValido("Escolha o mapa desejado:");
+            do {
+                System.out.println("Escolha um mapa:");
+                for (int i = 0; i < missao.getNumMapas(); i++) {
+                    System.out.println("  - " + (i + 1));
+                }
+                System.out.println("\n");
+                op = scanner.nextInt();
+            } while (op <= 0 || op > missao.getNumMapas());
+
             verMapa(missao.getEdificio(op));
-        } while (!confirmarEscolha());
+
+            System.out.println("Confirmar escolha? (y/n)\n 1. Sim\n 2. Não\n");
+            int temp = scanner.nextInt();
+            if (temp == 1) // altera para lowercase e verifica se é a opção correta
+                confirmar = true;
+        } while (!confirmar);
         return missao.getEdificio(op);
     }
 
-    private void exibirMapasDisponiveis(Missao missao) {
-        System.out.println("");
-        for (int i = 0; i < missao.getNumMapas(); i++) {
-            System.out.println(" - " + (i + 1));
-        }
-    }
-
-    private boolean confirmarEscolha() {
-        System.out.println("");
-        int temp = scanner.nextInt();
-        return temp == 1;
-    }
-
     private Divisao escolherEntrada(Edificio edificio) {
+        int op = 0, i = 1;
         String escolhas = "Escolha uma entrada:\n";
         Iterator<Divisao> entradas = edificio.verEntradas();
-        int i = 1;
         while (entradas.hasNext()) {
             Divisao divisao = entradas.next();
             if (divisao.isEntrada())
                 escolhas += " " + i++ + ". " + divisao.getNome() + "\n";
         }
 
-        int op;
         do {
             System.out.println(escolhas);
             op = scanner.nextInt();
@@ -232,17 +199,22 @@ public class Main {
     private boolean escolherSair() {
         System.out.println("Está numa saida, quer sair da Missão?\n 1. Sair\n 2. Ficar\n");
         int choice = scanner.nextInt();
-        return choice == 1;
+        if (choice == 1)
+            return true;
+        return false;
     }
 
     /* VIZUALIZAR MAPA */
 
     private String verMapa(Edificio edificio) {
         String asciiRepresentation = "";
+
         Iterator<Divisao> divisoes = edificio.getMapa().getVertices();
+
         while (divisoes.hasNext()) {
             Divisao divisao = divisoes.next();
-            asciiRepresentation += ((jogo.getDivisaoAtual().equals(divisao)) ? "[" + divisao.getNome() + "]" : " " + divisao.getNome() + " ") + adjacentes(edificio, divisao);
+            asciiRepresentation += (jogo.getDivisaoAtual().equals(divisao)) ? "[" + divisao.getNome() + "]" : " " + divisao.getNome() + " ";
+            asciiRepresentation += adjacentes(edificio, divisao);
         }
 
         return asciiRepresentation;
@@ -264,6 +236,7 @@ public class Main {
         while (ligacoes.hasNext())
             asciiRepresentation += " <-> " + ligacoes.next().getNome();
         asciiRepresentation += "\n";
+
         return asciiRepresentation;
     }
 
@@ -277,7 +250,7 @@ public class Main {
         Main main = new Main();
 
         // Tests
-        // main.importarNovaMissao("C:/Users/Arneiro/Desktop/ESTG/2º Ano/ED/Trabalho_ED/Resource/test.json");
+        main.importarNovaMissao("C:/Users/Arneiro/Desktop/ESTG/2º Ano/ED/Trabalho_ED/Resource/test.json");
         // main.importarNovaMissao("D:/alexv/PROJETOS/ED_Java/Trabalho/Resource/test.json");
 
         main.iniciarJogo();
