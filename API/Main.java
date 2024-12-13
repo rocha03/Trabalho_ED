@@ -88,7 +88,7 @@ public class Main {
                         System.out.println("Não tem mais kits!");
                         break;
                     case 3:
-                        verMapa(edificio);
+                        System.out.println(verMapa(edificio));
                         naoRepetir = false;
                         break;
                 }
@@ -224,8 +224,7 @@ public class Main {
 
         while (divisoes.hasNext()) {
             Divisao divisao = divisoes.next();
-            asciiRepresentation += (jogo.getDivisaoAtual().equals(divisao)) ? "[" + divisao.getNome() + "]"
-                    : " " + divisao.getNome() + " ";
+            asciiRepresentation += (jogo.getDivisaoAtual().equals(divisao)) ? "[" + divisao.getNome() + "]" : " " + divisao.getNome() + " ";
             asciiRepresentation += adjacentes(edificio, divisao);
         }
 
