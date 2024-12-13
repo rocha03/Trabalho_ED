@@ -9,6 +9,7 @@ import API.Jogo.Missao;
 import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
 import API.Jogo.Personagem.Inimigo;
+import API.Jogo.Personagem.ToCruz;
 
 /**
  * A class that handles the main game logic and user interactions for a mission-based game.
@@ -73,6 +74,7 @@ public class Main {
                 naoRepetir = true;
                 do {
                     // Display action options based on whether the game is in combat mode
+                    statusToCruz();
                     System.out.println(jogo.getStatusCombate() ? "Escolher ação (Combate):" : "Escolher ação:");
                     System.out.println(" 1. " + (jogo.getStatusCombate() ? "Atacar;" : "Mover;"));
                     System.out.println(" 2. Usar Kit;");
@@ -115,7 +117,7 @@ public class Main {
                         System.out.println("Não tem mais kits!");
                         break;
                     case 3:
-                        verMapa(edificio); // View the map
+                        System.out.println(verMapa(edificio));
                         naoRepetir = false;
                         break;
                 }
@@ -127,6 +129,10 @@ public class Main {
         }
 
         // Final message based on the game outcome
+        mensagemFinal(edificio);
+    }
+
+    private void mensagemFinal(Edificio edificio) {
         switch (jogo.gameStatus(edificio)) {
             case 1:
                 System.out.println("Missão Concluída com Sucesso!");
@@ -148,17 +154,15 @@ public class Main {
         jogo.iniciarTurnosAuto(edificio); // Start automatic turns
 
         // Final message based on the game outcome
-        switch (jogo.gameStatus(edificio)) {
-            case 1:
-                System.out.println("Missão Concluída com Sucesso!");
-                break;
-            case 2:
-                System.out.println("O Tó Cruz falhou a missão...");
-                break;
-            case 3:
-                System.out.println("Tó Cruz foi derrotado...");
-                break;
-        }
+        mensagemFinal(edificio);
+    }
+
+    private void statusToCruz() {
+        int vidaTC = ToCruz.getInstance().getVida();
+        int escudoTC = ToCruz.getInstance().getEscudo();
+        
+        System.out.println("Vida: " + vidaTC);
+        System.out.println("Escudo: " + escudoTC);
     }
 
     /**
@@ -275,9 +279,8 @@ public class Main {
 
         while (divisoes.hasNext()) {
             Divisao divisao = divisoes.next();
-            asciiRepresentation += (jogo.getDivisaoAtual().equals(divisao)) ? "[" + divisao.getNome() + "]"
-                    : " " + divisao.getNome() + " ";
-            asciiRepresentation += adjacentes(edificio, divisao); // Show adjacent divisions
+            asciiRepresentation += (jogo.getDivisaoAtual().equals(divisao)) ? "[" + divisao.getNome() + "]" : " " + divisao.getNome() + " ";
+            asciiRepresentation += adjacentes(edificio, divisao);
         }
 
         return asciiRepresentation;
@@ -327,7 +330,7 @@ public class Main {
     public static void main(String[] args) {
         Main main = new Main();
 
-        main.importarNovaMissao("C:/Users/Arneiro/Desktop/ESTG/2º Ano/ED/Trabalho_ED/Resource/test.json");
+        // main.importarNovaMissao("C:/Users/Arneiro/Desktop/ESTG/2º Ano/ED/Trabalho_ED/Resource/test.json");
         // main.importarNovaMissao("D:/alexv/PROJETOS/ED_Java/Trabalho/Resource/test.json");
 
         main.iniciarJogo(); // Start the game
