@@ -3,25 +3,24 @@ package API.Jogo.Itens;
 import API.Enums.TipoItens;
 
 /**
- * Classe que representa um Item com divisão, pontos e tipo.
+ * Class that represents an Item with points and type.
  */
 public class Item {
     /**
-     * Pontos atribuídos ao item.
+     * Points assigned to the item.
      */
     private int pontos;
 
     /**
-     * Tipo do item.
+     * Type of the item.
      */
     private TipoItens tipo;
 
     /**
-     * Construtor da classe Item.
+     * Constructor for the Item class.
      * 
-     * @param divisao A divisão associada ao item.
-     * @param pontos Os pontos atribuídos ao item.
-     * @param tipo O tipo do item.
+     * @param pontos The points assigned to the item.
+     * @param tipo The type of the item.
      */
     public Item(int pontos, TipoItens tipo) {
         this.pontos = pontos;
@@ -29,18 +28,18 @@ public class Item {
     }
 
     /**
-     * Obtém os pontos atribuídos ao item.
+     * Gets the points assigned to the item.
      * 
-     * @return Os pontos do item.
+     * @return The points of the item.
      */
     public int getPontos() {
         return pontos;
     }
 
     /**
-     * Obtém o tipo do item.
+     * Gets the type of the item.
      * 
-     * @return O tipo do item.
+     * @return The type of the item.
      */
     public TipoItens getTipo() {
         return tipo;

@@ -23,18 +23,42 @@ import Exceptions.EmptyCollectionException;
 import Interfaces.StackADT;
 import Interfaces.List.UnorderedListADT;
 
+/**
+ * The JSON_Editor class is responsible for reading mission data from a JSON file, 
+ * processing the mission information, and returning a populated `Missao` object.
+ * It ensures that the mission data is correctly parsed and structured from the JSON input.
+ */
 public class JSON_Editor {
+
+    /** Singleton instance of the JSON_Editor. */
     private static JSON_Editor instance;
 
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private JSON_Editor() {
     }
 
+    /**
+     * Returns the singleton instance of JSON_Editor.
+     * If the instance is not already created, it initializes a new one.
+     * 
+     * @return The singleton instance of JSON_Editor.
+     */
     public static JSON_Editor getInstance() {
         if (instance == null)
             instance = new JSON_Editor();
         return instance;
     }
 
+    /**
+     * Reads a JSON file and converts the data into a `Missao` object.
+     * The mission data includes mission code, version, map details, enemies, items, and more.
+     * 
+     * @param filePath The path to the JSON file.
+     * @return A `Missao` object populated with data from the JSON file.
+     * @throws RuntimeException if an error occurs while reading or parsing the JSON file.
+     */
     public Missao JSON_Read(String filePath) {
         JSONParser jsonParser = new JSONParser();
 
@@ -69,6 +93,13 @@ public class JSON_Editor {
         }
     }
 
+    /**
+     * Processes the mission code from the JSON object.
+     * 
+     * @param jsonObject The parsed JSON object containing mission data.
+     * @return The mission code as a string.
+     * @throws IllegalArgumentException if the mission code is missing or invalid.
+     */
     private String processarCodigo(JSONObject jsonObject) {
         Object codMissaoObj = jsonObject.get("cod-missao");
 
@@ -79,6 +110,13 @@ public class JSON_Editor {
         }
     }
 
+    /**
+     * Processes the version of the mission from the JSON object.
+     * 
+     * @param jsonObject The parsed JSON object containing mission data.
+     * @return The version number as an integer.
+     * @throws IllegalArgumentException if the version is missing or invalid.
+     */
     private int processarVersao(JSONObject jsonObject) {
         Object versaoObj = jsonObject.get("versao");
 
@@ -89,6 +127,13 @@ public class JSON_Editor {
         }
     }
 
+    /**
+     * Processes the vertices (divisions) from the JSON object and adds them to the map.
+     * 
+     * @param jsonObject The parsed JSON object containing mission data.
+     * @param mapa The map to which the divisions (vertices) will be added.
+     * @throws IllegalArgumentException if the 'edificio' field is missing or invalid.
+     */
     private void processarVertices(JSONObject jsonObject, Mapa<Divisao> mapa) {
         JSONArray divisoesArray = (JSONArray) jsonObject.get("edificio");
         if (divisoesArray == null)
@@ -99,6 +144,13 @@ public class JSON_Editor {
                     processarItens(jsonObject, (String) item)));
     }
 
+    /**
+     * Processes the edges (connections between divisions) from the JSON object and adds them to the map.
+     * 
+     * @param jsonObject The parsed JSON object containing mission data.
+     * @param mapa The map to which the edges will be added.
+     * @throws IllegalArgumentException if the 'ligacoes' field is missing or invalid.
+     */
     private void processarArestas(JSONObject jsonObject, Mapa<Divisao> mapa) {
         JSONArray arestasArray = (JSONArray) jsonObject.get("ligacoes");
         if (arestasArray == null)
@@ -119,6 +171,14 @@ public class JSON_Editor {
         }
     }
 
+    /**
+     * Processes the enemies for a specific division from the JSON object.
+     * 
+     * @param jsonObject The parsed JSON object containing mission data.
+     * @param divisao The name of the division to process enemies for.
+     * @return A list of enemies for the specified division.
+     * @throws IllegalArgumentException if the 'inimigos' field is missing or invalid.
+     */
     private UnorderedListADT<Inimigo> processarInimigos(JSONObject jsonObject, String divisao) {
         JSONArray inimigosArray = (JSONArray) jsonObject.get("inimigos");
         if (inimigosArray == null)
@@ -137,6 +197,14 @@ public class JSON_Editor {
         return inimigos;
     }
 
+    /**
+     * Processes the target (alvo) from the JSON object.
+     * 
+     * @param jsonObject The parsed JSON object containing mission data.
+     * @param mapa The map to retrieve the target division.
+     * @return The target (Alvo) for the mission.
+     * @throws IllegalArgumentException if the 'alvo' field is missing or invalid.
+     */
     private Alvo processarAlvo(JSONObject jsonObject, Mapa<Divisao> mapa) {
         JSONObject alvoObj = (JSONObject) jsonObject.get("alvo");
         if (alvoObj == null) {
@@ -151,6 +219,13 @@ public class JSON_Editor {
         return null;
     }
 
+    /**
+     * Processes the entry/exit points for the map from the JSON object.
+     * 
+     * @param jsonObject The parsed JSON object containing mission data.
+     * @param mapa The map to update with the entry/exit points.
+     * @throws IllegalArgumentException if the 'entradas-saidas' field is missing or invalid.
+     */
     private void processarEntradas(JSONObject jsonObject, Mapa<Divisao> mapa) {
         try {
             JSONArray entradasArray = (JSONArray) jsonObject.get("entradas-saidas");
@@ -167,6 +242,14 @@ public class JSON_Editor {
         }
     }
 
+    /**
+     * Processes the items in a specific division from the JSON object.
+     * 
+     * @param jsonObject The parsed JSON object containing mission data.
+     * @param divisao The name of the division to process items for.
+     * @return A stack of items for the specified division.
+     * @throws IllegalArgumentException if the 'itens' field is missing or invalid.
+     */
     private StackADT<Item> processarItens(JSONObject jsonObject, String divisao) {
         JSONArray itensArray = (JSONArray) jsonObject.get("itens");
         if (itensArray == null)

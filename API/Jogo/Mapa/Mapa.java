@@ -60,6 +60,11 @@ public class Mapa<T> extends ArrayGraph<T> {
         return vertices[i];
     }
 
+    /**
+     * Retrieves all vertices of the graph as an iterator.
+     * 
+     * @return an iterator containing all vertices of the graph
+     */
     public Iterator<T> getVertices() {
         UnorderedListADT<T> list = new LinkedUnorderedList<>();
         for (int i = 0; i < numVertices; i++)

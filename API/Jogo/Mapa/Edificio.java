@@ -11,33 +11,36 @@ import Exceptions.EmptyCollectionException;
 import Interfaces.List.UnorderedListADT;
 
 /**
- * Representa um Edifício no jogo, contendo divisões organizadas em um mapa,
- * entradas e um alvo específico.
+ * Represents a Building in the game, containing divisions organized in a map,
+ * entries, and a specific target.
  */
 public class Edificio {
     /**
-     * A versão do edifício.
+     * The version of the building.
      */
     private int versao;
 
     /**
-     * O mapa que organiza as divisões do edifício.
+     * The map that organizes the divisions of the building.
      */
     private Mapa<Divisao> mapa;
 
     /**
-     * O alvo associado ao edifício.
+     * The target associated with the building.
      */
     private Alvo alvo;
+
+    /**
+     * Random number generator for enemy movements.
+     */
     private Random random = new Random();
 
     /**
-     * Construtor que inicializa um edifício com uma versão, mapa, entradas e alvo.
+     * Constructor that initializes a building with a version, map, and target.
      *
-     * @param versao   a versão do edifício
-     * @param mapa     o mapa das divisões do edifício
-     * @param entradas a lista de entradas do edifício
-     * @param alvo     o alvo associado ao edifício
+     * @param versao the version of the building
+     * @param mapa   the map of the building's divisions
+     * @param alvo   the target associated with the building
      */
     public Edificio(int versao, Mapa<Divisao> mapa, Alvo alvo) {
         this.versao = versao;
@@ -46,36 +49,36 @@ public class Edificio {
     }
 
     /**
-     * Obtém o mapa do edifício.
+     * Gets the map of the building.
      *
-     * @return o mapa das divisões do edifício
+     * @return the map of the building's divisions
      */
     public Mapa<Divisao> getMapa() {
         return mapa;
     }
 
     /**
-     * Obtém o alvo do edifício.
+     * Gets the target of the building.
      *
-     * @return o alvo associado ao edifício
+     * @return the target associated with the building
      */
     public Alvo getAlvo() {
         return alvo;
     }
 
     /**
-     * Obtém a versão do edifício.
+     * Gets the version of the building.
      *
-     * @return a versão do edifício
+     * @return the version of the building
      */
     public int getVersao() {
         return versao;
     }
 
     /**
-     * Obtém o número de entradas do edifício.
+     * Gets the number of entries in the building.
      *
-     * @return o número de entradas
+     * @return the number of entries
      */
     public int getNumEntradas() {
         Iterator<Divisao> iterator = mapa.getVertices();
@@ -88,19 +91,19 @@ public class Edificio {
     }
 
     /**
-     * Obtém uma lista formatada das entradas disponíveis no edifício.
+     * Gets a formatted list of the available entries in the building.
      *
-     * @return uma string com as entradas numeradas
+     * @return an iterator with the entries
      */
     public Iterator<Divisao> verEntradas() {
         return mapa.getVertices();
     }
 
     /**
-     * Obtém a entrada especificada pelo número fornecido.
+     * Gets the specified entry by the provided number.
      *
-     * @param num o número da entrada desejada (começando em 1)
-     * @return a divisão correspondente à entrada
+     * @param num the number of the desired entry (starting at 1)
+     * @return the division corresponding to the entry
      */
     public Divisao getEntrada(int num) {
         Iterator<Divisao> iterator = mapa.getVertices();
@@ -115,15 +118,21 @@ public class Edificio {
     }
 
     /**
-     * Obtém as divisões adjacentes a uma determinada divisão no mapa do edifício.
+     * Gets the divisions adjacent to a given division in the building's map.
      *
-     * @param divisao a divisão para a qual se deseja encontrar adjacentes
-     * @return um iterador para as divisões adjacentes
+     * @param divisao the division for which to find adjacents
+     * @return an iterator for the adjacent divisions
      */
     public Iterator<Divisao> getAdjacentes(Divisao divisao) {
         return mapa.getAdjacentes(divisao);
     }
 
+    /**
+     * Calculates an optimal path in the building either towards or away from the target.
+     *
+     * @param isReverse if true, calculates path away from the target; otherwise, towards the target
+     * @return an iterator of the divisions in the path
+     */
     public Iterator<Divisao> getAutoPath(boolean isReverse) {
         Iterator<Divisao> iterator = mapa.getVertices();
 
@@ -176,8 +185,11 @@ public class Edificio {
         return optimalPath.iterator();
     }
 
-    
-
+    /**
+     * Moves enemies within the building starting from a specified division.
+     *
+     * @param startDivision the division where enemy movement begins
+     */
     public void moveEnemies(Divisao startDivision) {
         // Reset all enemies' movement state
         resetEnemyMovements();
@@ -191,6 +203,11 @@ public class Edificio {
         }
     }
 
+    /**
+     * Moves enemies from a specific division to adjacent divisions.
+     *
+     * @param division the division to move enemies from
+     */
     private void moveEnemiesInDivision(Divisao division) {
         // Prepare a list to track enemies that will be moved
         UnorderedListADT<Inimigo> toMove = new LinkedUnorderedList<>();
@@ -220,6 +237,13 @@ public class Edificio {
         }
     }
 
+    /**
+     * Calculates a random destination for an enemy within a given number of steps.
+     *
+     * @param start the starting division
+     * @param steps the number of steps to move
+     * @return the calculated destination division
+     */
     private Divisao calculateRandomDestination(Divisao start, int steps) {
         Divisao current = start;
 
@@ -249,6 +273,9 @@ public class Edificio {
         return current;
     }
 
+    /**
+     * Resets the movement state of all enemies in the building.
+     */
     private void resetEnemyMovements() {
         // Traverse the graph using BFS and reset all enemies' movement state
         Iterator<Divisao> iterator = mapa.getVertices();

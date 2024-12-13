@@ -3,26 +3,29 @@ package API.Jogo.Personagem;
 import java.util.Random;
 
 /**
- * Representa um Inimigo, uma extensão de Combatente, com nome e estado de
- * movimento.
+ * Represents an Enemy, a subclass of Combatant, with a name and movement state.
  */
 public class Inimigo extends Combatente {
     /**
-     * O nome do inimigo.
+     * The name of the enemy.
      */
     private String nome;
 
     /**
-     * Indica se o inimigo já se moveu.
+     * Indicates whether the enemy has already moved.
      */
     private boolean moved;
+
+    /**
+     * Random number generator used to initialize the enemy's health.
+     */
     private Random random = new Random();
 
     /**
-     * Construtor que inicializa um Inimigo com nome e poder específicos.
+     * Constructor that initializes an Enemy with a specific name and power.
      *
-     * @param nome  o nome do inimigo
-     * @param poder o poder do inimigo
+     * @param nome  the name of the enemy
+     * @param poder the power of the enemy
      */
     public Inimigo(String nome, int poder) {
         super();
@@ -33,49 +36,49 @@ public class Inimigo extends Combatente {
     }
 
     /**
-     * Verifica se o inimigo já se moveu.
+     * Checks if the enemy has moved.
      *
-     * @return {@code true} se o inimigo se moveu, caso contrário {@code false}
+     * @return {@code true} if the enemy has moved, otherwise {@code false}
      */
     public boolean isMoved() {
         return moved;
     }
 
     /**
-     * Define o estado de movimento do inimigo.
+     * Sets the movement state of the enemy.
      *
-     * @param moved o novo estado de movimento
+     * @param moved the new movement state
      */
     public void setMoved(boolean moved) {
-        this.moved = moved;
+        this.moved = moved; // Updates the movement state
     }
 
     /**
-     * Obtém o nome do inimigo.
+     * Gets the name of the enemy.
      *
-     * @return o nome do inimigo
+     * @return the name of the enemy
      */
     public String getNome() {
         return nome;
     }
 
     /**
-     * Aplica dano ao inimigo, reduzindo a sua vida.
+     * Applies damage to the enemy, reducing its health.
      *
-     * @param dano a quantidade de dano a ser aplicada
-     * @return a vida restante após o dano
+     * @param dano the amount of damage to apply
+     * @return the remaining health after the damage
      */
     @Override
     protected int receberDano(int dano) {
-        return vida -= dano;
+        return vida -= dano; // Reduces health by the damage amount
     }
 
     /**
-     * Realiza um ataque, aplicando dano ao Tó Cruz.
+     * Performs an attack, applying damage to the Tó Cruz target.
      *
-     * @param toCruz
+     * @param toCruz the target to receive the attack
      */
     public void atacar(ToCruz toCruz) {
-        darDano(toCruz);
+        darDano(toCruz); // Uses the inherited method to deal damage
     }
 }

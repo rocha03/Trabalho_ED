@@ -1,37 +1,36 @@
 package API.Jogo.Personagem;
 
 /**
- * Representa um Combatente abstrato com vida, poder e estado de combate.
+ * Represents an abstract Combatant with health, power, and combat status.
  */
 public abstract class Combatente {
     /**
-     * O valor máximo de vida que um combatente pode ter por defeito.
+     * The default maximum health a combatant can have.
      */
     protected static final int MAXVIDA = 100;
 
     /**
-     * A quantidade atual de vida do combatente.
+     * The current health of the combatant.
      */
     protected int vida;
 
     /**
-     * O poder ofensivo do combatente.
+     * The offensive power of the combatant.
      */
     protected int poder;
 
     /**
-     * Indica se o combatente está morto.
+     * Indicates whether the combatant is dead.
      */
     private boolean morto;
 
     /**
-     * Indica se o combatente está atualmente em combate.
+     * Indicates whether the combatant is currently engaged in combat.
      */
     private boolean emCombate;
 
     /**
-     * Construtor que inicializa o estado de um combatente como não morto e fora de
-     * combate.
+     * Constructor that initializes the combatant as alive and not in combat.
      */
     public Combatente() {
         this.morto = false;
@@ -39,60 +38,60 @@ public abstract class Combatente {
     }
 
     /**
-     * Obtém a quantidade atual de vida do combatente.
+     * Gets the current health of the combatant.
      *
-     * @return a vida atual do combatente
+     * @return the current health of the combatant
      */
     public int getVida() {
         return vida;
     }
 
     /**
-     * Aplica dano a outro combatente, baseado no poder do combatente atual.
+     * Applies damage to another combatant, based on this combatant's power.
      *
-     * @param personagem o combatente que receberá o dano
+     * @param personagem the combatant receiving the damage
      */
     protected void darDano(Combatente personagem) {
+        // Calculate the remaining health after receiving damage
         int vidatemp = personagem.receberDano(this.poder);
+
+        // If the remaining health is zero or less, mark the target as dead
         if (vidatemp <= 0)
             personagem.morto = true;
     }
 
     /**
-     * Método abstrato para receber dano, que será implementado pelas subclasses.
+     * Abstract method to receive damage, to be implemented by subclasses.
      *
-     * @param dano a quantidade de dano a ser aplicada
-     * @return a vida restante após o dano
+     * @param dano the amount of damage to be applied
+     * @return the remaining health after taking damage
      */
     protected abstract int receberDano(int dano);
 
     /**
-     * Verifica se o combatente está morto.
+     * Checks if the combatant is dead.
      *
-     * @return {@code true} se o combatente estiver morto, caso contrário
-     *         {@code false}
+     * @return {@code true} if the combatant is dead, otherwise {@code false}
      */
     public boolean estaMorto() {
         return morto;
     }
 
     /**
-     * Verifica se o combatente está atualmente em combate.
+     * Checks if the combatant is currently in combat.
      *
-     * @return {@code true} se o combatente estiver em combate, caso contrário
-     *         {@code false}
+     * @return {@code true} if the combatant is in combat, otherwise {@code false}
      */
     public boolean estaEmCombate() {
         return emCombate;
     }
 
     /**
-     * Define se o combatente está a entrar ou sair de combate.
+     * Sets the combatant's combat status.
      *
-     * @param combate {@code true} para entrar em combate, {@code false} para sair
-     *                de combate
+     * @param combate {@code true} to enter combat, {@code false} to leave combat
      */
     public void entrarOuSairCombate(boolean combate) {
-        emCombate = combate;
+        emCombate = combate; // Update combat status
     }
 }

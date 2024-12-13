@@ -1,26 +1,29 @@
 package API.Jogo.Mapa;
 
 /**
- * Representa um Alvo, associado a uma divisão e um tipo específico.
+ * Represents a Target, associated with a division and a specific type.
  */
 public class Alvo {
     /**
-     * A divisão à qual o alvo pertence.
+     * The division to which the target belongs.
      */
     private Divisao divisao;
 
     /**
-     * O tipo do alvo.
+     * The type of the target.
      */
     private String tipo;
 
+    /**
+     * Whether the target has been interacted with.
+     */
     private boolean interagido;
 
     /**
-     * Construtor que inicializa um Alvo com uma divisão e um tipo.
+     * Constructor that initializes a Target with a division and a type.
      *
-     * @param divisao a divisão associada ao alvo
-     * @param tipo    o tipo do alvo
+     * @param divisao The division associated with the target.
+     * @param tipo    The type of the target.
      */
     public Alvo(Divisao divisao, String tipo) {
         this.divisao = divisao;
@@ -28,27 +31,37 @@ public class Alvo {
         this.interagido = false;
     }
 
+    /**
+     * Checks if the target has been interacted with.
+     *
+     * @return True if the target has been interacted with, false otherwise.
+     */
     public boolean foiInteragido() {
         return interagido;
     }
 
+    /**
+     * Sets the interaction status of the target.
+     *
+     * @param interagido True if the target has been interacted with, false otherwise.
+     */
     public void setInteragido(boolean interagido) {
         this.interagido = interagido;
     }
 
     /**
-     * Obtém a divisão associada ao alvo.
+     * Gets the division associated with the target.
      *
-     * @return a divisão do alvo
+     * @return The division of the target.
      */
     public Divisao getDivisao() {
         return divisao;
     }
 
     /**
-     * Obtém o tipo do alvo.
+     * Gets the type of the target.
      *
-     * @return o tipo do alvo
+     * @return The type of the target.
      */
     public String getTipo() {
         return tipo;

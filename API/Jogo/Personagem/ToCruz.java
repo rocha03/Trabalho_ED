@@ -11,31 +11,31 @@ import Interfaces.StackADT;
 import Interfaces.List.UnorderedListADT;
 
 /**
- * Representa o personagem principal, ToCruz, que é um combatente único no jogo.
+ * Represents the main character, ToCruz, who is a unique combatant in the game.
  */
 public class ToCruz extends Combatente {
     /**
-     * Instância única de ToCruz (padrão Singleton).
+     * The single instance of ToCruz (Singleton pattern).
      */
     private static ToCruz instance;
 
     /**
-     * O valor atual do escudo de ToCruz.
+     * The current shield value of ToCruz.
      */
     private int escudo;
 
     /**
-     * A mala de ToCruz, que armazena itens.
+     * The backpack (mala) of ToCruz, which stores items.
      */
     private StackADT<Item> mala;
 
     /**
-     * A divisão onde ToCruz se encontra atualmente.
+     * The current division where ToCruz is located.
      */
     private Divisao divisao;
 
     /**
-     * Construtor privado para implementar o padrão Singleton.
+     * Private constructor to implement the Singleton pattern.
      */
     private ToCruz() {
         super();
@@ -47,76 +47,82 @@ public class ToCruz extends Combatente {
     }
 
     /**
-     * Obtém a instância única de ToCruz.
+     * Retrieves the single instance of ToCruz.
      *
-     * @return a instância de ToCruz
+     * @return the ToCruz instance
      */
     public static ToCruz getInstance() {
-        if (instance == null)
+        if (instance == null) // Creates the instance if it doesn't exist
             instance = new ToCruz();
         return instance;
     }
 
     /**
-     * Obtém o valor atual do escudo.
+     * Gets the current shield value.
      *
-     * @return o valor do escudo
+     * @return the shield value
      */
     public int getEscudo() {
         return escudo;
     }
 
     /**
-     * Obtém a divisão atual de ToCruz.
+     * Gets the current division of ToCruz.
      *
-     * @return a divisão atual
+     * @return the current division
      */
     public Divisao getDivisao() {
         return divisao;
     }
 
     /**
-     * Define a divisão atual de ToCruz.
+     * Sets the current division of ToCruz.
      *
-     * @param divisao a nova divisão
+     * @param divisao the new division
      */
     public void setDivisao(Divisao divisao) {
         this.divisao = divisao;
     }
 
     /**
-     * Permite a ToCruz apanhar itens na divisão atual.
+     * Allows ToCruz to pick up items in the current division.
      */
     public void apanharItens() {
         Item item;
-        while ((item = divisao.removerItem()) != null)
+        while ((item = divisao.removerItem()) != null) { // Retrieves items from the division
             switch (item.getTipo()) {
-                case KIT_DE_VIDA:
+                case KIT_DE_VIDA: // Adds health kits to the backpack
                     mala.push(item);
                     break;
-                case COLETE:
+                case COLETE: // Applies the shield effect of vests
                     colete(item);
                     break;
             }
-    }
-
-    /**
-     * Usa um kit de vida, se disponível, para restaurar a vida.
-     *
-     * @return {@code true} se o kit de vida foi usado, caso contrário {@code false}
-     */
-    public boolean usarMedKit() {
-        try {
-            Item item = mala.pop();
-            medKit(item);
-            return true;
-        } catch (EmptyCollectionException e) {
-            return false;
         }
     }
 
+    /**
+     * Uses a health kit, if available, to restore health.
+     *
+     * @return {@code true} if a health kit was used, otherwise {@code false}
+     */
+    public boolean usarMedKit() {
+        try {
+            Item item = mala.pop(); // Retrieves the last item in the backpack
+            medKit(item); // Applies the health kit effect
+            return true;
+        } catch (EmptyCollectionException e) {
+            return false; // Returns false if no items are available
+        }
+    }
+
+    /**
+     * Automatically uses a health kit if health is critically low.
+     *
+     * @return {@code true} if a health kit was used, otherwise {@code false}
+     */
     public boolean autoUsarKit() {
-        if (vida < 15) {
+        if (vida < 15) { // Checks if health is below the critical threshold
             usarMedKit();
             return true;
         }
@@ -124,65 +130,65 @@ public class ToCruz extends Combatente {
     }
 
     /**
-     * Aplica o efeito de um kit de vida, aumentando a vida.
+     * Applies the effect of a health kit, increasing health.
      *
-     * @param item o item que representa o kit de vida
-     * @return a vida após o uso do kit de vida
+     * @param item the item representing the health kit
+     * @return the health after using the kit
      */
     private int medKit(Item item) {
-        vida += item.getPontos();
-        if (vida > MAXVIDA)
+        vida += item.getPontos(); // Increases health by the item's value
+        if (vida > MAXVIDA) // Ensures health does not exceed the maximum
             vida = MAXVIDA;
         return vida;
     }
 
     /**
-     * Aplica o efeito de um colete, aumentando o escudo.
+     * Applies the effect of a vest, increasing the shield.
      *
-     * @param item o item que representa o colete
-     * @return o escudo após o uso do colete
+     * @param item the item representing the vest
+     * @return the shield value after using the vest
      */
     private int colete(Item item) {
-        escudo += item.getPontos();
+        escudo += item.getPontos(); // Increases shield by the item's value
         return escudo;
     }
 
     /**
-     * Aplica dano a ToCruz, reduzindo o escudo primeiro e depois a vida.
+     * Applies damage to ToCruz, reducing the shield first and then health.
      *
-     * @param dano a quantidade de dano a ser aplicada
-     * @return a vida restante após o dano
+     * @param dano the amount of damage to apply
+     * @return the remaining health after taking damage
      */
     @Override
     protected int receberDano(int dano) {
-        escudo -= dano;
-        if (escudo < 0) {
+        escudo -= dano; // Reduces the shield by the damage amount
+        if (escudo < 0) { // Transfers excess damage to health
             vida += escudo;
             escudo = 0;
         }
-        if (vida < 0)
+        if (vida < 0) // Ensures health does not drop below zero
             vida = 0;
         return vida;
     }
 
     /**
-     * Ataca todos os inimigos presentes na divisão atual, removendo os inimigos
-     * mortos após o ataque.
+     * Attacks all enemies present in the current division, removing defeated enemies.
      *
-     * @return uma mensagem indicando o resultado do ataque: se todos os inimigos
-     *         foram derrotados ou quantos ainda permanecem na sala.
+     * @return an iterator over the defeated enemies
      */
     public Iterator<Inimigo> atacar() {
         Iterator<Inimigo> iterator = divisao.getInimigos().iterator();
         UnorderedListADT<Inimigo> derrotados = new LinkedUnorderedList<>();
         Inimigo inimigo;
+
         while (iterator.hasNext()) {
             inimigo = iterator.next();
-            darDano(inimigo);
-            if (inimigo.estaMorto()) 
-                derrotados.addToRear(inimigo);
+            darDano(inimigo); // Deals damage to the enemy
+            if (inimigo.estaMorto()) // Checks if the enemy is dead
+                derrotados.addToRear(inimigo); // Adds defeated enemies to the list
         }
-        divisao.removerInimigosMortos();
-        return derrotados.iterator();
+
+        divisao.removerInimigosMortos(); // Removes defeated enemies from the division
+        return derrotados.iterator(); // Returns an iterator over defeated enemies
     }
 }
