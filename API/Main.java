@@ -9,6 +9,7 @@ import API.Jogo.Missao;
 import API.Jogo.Mapa.Divisao;
 import API.Jogo.Mapa.Edificio;
 import API.Jogo.Personagem.Inimigo;
+import API.Jogo.Personagem.ToCruz;
 
 public class Main {
 
@@ -46,6 +47,7 @@ public class Main {
         while (jogoAtivo) {
             do {
                 do {
+                    statusToCruz();
                     System.out.println(jogo.getStatusCombate() ? "Escolher ação (Combate):" : "Escolher ação:");
                     System.out.println(" 1. " + (jogo.getStatusCombate() ? "Atacar" : "Mover"));
                     System.out.println(" 2. Usar Kit.");
@@ -90,6 +92,10 @@ public class Main {
         }
 
         // Mensagem final
+        mensagemFinal(edificio);
+    }
+
+    private void mensagemFinal(Edificio edificio) {
         switch (jogo.gameStatus(edificio)) {
             case 1:
                 System.out.println("Missão Concluída com Sucesso!");
@@ -107,17 +113,15 @@ public class Main {
         jogo.iniciarTurnosAuto(edificio);
 
         // Mensagem final
-        switch (jogo.gameStatus(edificio)) {
-            case 1:
-                System.out.println("Missão Concluída com Sucesso!");
-                break;
-            case 2:
-                System.out.println("O Tó Cruz falhou a missão...");
-                break;
-            case 3:
-                System.out.println("Tó Cruz foi derrotado...");
-                break;
-        }
+        mensagemFinal(edificio);
+    }
+
+    private void statusToCruz() {
+        int vidaTC = ToCruz.getInstance().getVida();
+        int escudoTC = ToCruz.getInstance().getEscudo();
+        
+        System.out.println("Vida: " + vidaTC);
+        System.out.println("Escudo: " + escudoTC);
     }
 
     private Missao escolherMissao() {
